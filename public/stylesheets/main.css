@@ -1,0 +1,58 @@
+/*
+.list-group-item.active,
+.list-group-item.active:hover,
+.list-group-item.active:focus {
+*/
+.brands {
+  /*text-shadow: 0 -1px 0 #3071a9;
+  background-image: -webkit-linear-gradient(top, #428bca 0%, #3278b3 100%);
+  background-image:         linear-gradient(to bottom, #428bca 0%, #3278b3 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff428bca', endColorstr='#ff3278b3', GradientType=0);
+  background-repeat: repeat-x;
+  border-color: #3278b3;*/
+  padding-top: 25px;
+  padding-right: 50px;
+  padding-bottom: 25px;
+  padding-left: 50px;
+}
+.body-start {
+  padding-top: 70px;
+}
+
+.headline {
+  padding-bottom: 30px;
+}
+
+.footer-text {
+  padding-top: 25px;
+  text-transform: lowercase;
+}
+
+.eococsBox {
+  padding: 8px;
+}
+
+.resName {
+  padding-top: 5px;
+}
+
+.cmtAnswer {
+  margin-left: 40px;
+}
+
+textarea {
+  resize: none;
+}
+
+.cmtAnswerCB {
+  padding-top: 12px;
+}
+
+.adminEditResDil {
+  padding-left: 25px;
+}
+
+.plusEins {
+  font-size:115%;
+  font-weight:900;
+}

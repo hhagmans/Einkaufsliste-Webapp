@@ -1,0 +1,51 @@
+@import org.joda.time.DateTime
+@()
+
+@main {
+  <div class="row">
+    <div class="page-header">
+      <h1>Neue Einkaufsliste</h1>
+    </div><!--page-header-->
+  </div><!--row-->
+    <div class="row">
+    @helper.form(action=routes.Application.createShoppingListSave()) {
+    <div class="form-group" id="divDate">
+		<label for="date">Datum</label>
+		<input type="text" class="form-control" id="date" name="date">
+    </div>
+    	<table class="table table-striped">
+	    	<thead>
+	    		<tr>
+	    			<th></th>
+	    			<th></th>
+	    		</tr>
+	    	</thead>
+	    	<tbody>
+		    		<tr>
+              <td>
+                 <div class="form-group" id="divArticle">
+			            <label for="articleInput">Artikel</label>
+			            <input type="text" class="form-control" id="articleInput" name="article0">
+			        </div>
+              </td>
+		  	  <td>
+	  			<div id="divCategory">
+	  			<label for="categoryInput">Kategorie</label>
+	              <select class="form-control" id="categoryInput" name="category">
+	                <option value="0">Fleisch</option>
+	                <option value="1">Fisch</option>
+	                <option value="2">Tiefk&uuml;hlprodukte</option>
+	              </select>
+            </div>
+		 </tr>
+        </tbody>
+    	</table>
+    </div><!--row-->
+    <div class="row">
+      <div class="col-md-2">
+        <button type="submit" class="btn btn-primary">Einkaufsliste erstellen</button>
+      </div><!--col-md-2-->
+      <div class="col-md-10"></div>
+    </div><!--row-->
+    }
+}

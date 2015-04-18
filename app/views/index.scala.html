@@ -1,7 +1,61 @@
-@(message: String)
+@import org.joda.time.DateTime
+@(allShoppingLists: List[ShoppingList])
 
-@main("Welcome to Play") {
-
-    @play20.welcome(message, style = "Java")
-
+@main {
+  <div class="row">
+    <div class="page-header">
+      <h1>Einkaufslisten</h1>
+    </div><!--page-header-->
+  </div><!--row-->
+    <div class="row">
+    	<table class="table table-striped">
+	    	<thead>
+	    		<tr>
+	    			<th></th>
+	    			<th></th>
+	    			<th></th>
+	    		</tr>
+	    	</thead>
+	    	<tbody>
+	    	@if(!allShoppingLists.isEmpty()) {
+	    		@for(list <- allShoppingLists) {
+		    		<tr>
+              <td>
+                <p class="lead">
+                  @list.getDate().format("dd.MM.yyyy")
+                </p>
+              </td>
+		  				<td>
+		  					<a>
+		  						<button type="button" class="btn btn-primary btn" title="bearbeiten">
+                    <span class="fa fa-pencil fa-2x"></span>
+                  </button>
+		  					</a>
+		  				</td>
+		  				<td>
+		  					<a href="">
+		  						<button type="button" class="btn btn-danger btn" onclick="return confirm('Sind Sie sicher?');"
+                  title="löschen">
+								  <span class="fa fa-trash fa-2x"></span>
+								</button>
+		  					</a>
+		  				</td>
+		  			</tr>
+          }
+          } else {
+          Noch keine Einkaufslisten vorhanden
+          }
+        </tbody>
+    	</table>
+    </div><!--row-->
+    <div class="row">
+      <div class="col-md-2">
+        <a href="@routes.Application.createShoppingList()" type="button" class="btn btn-default" title="neue Einkaufsliste">
+  				<span class="fa fa-shopping-cart fa-3x">
+            Neu
+          </span>
+  			</a>
+      </div><!--col-md-2-->
+      <div class="col-md-10"></div>
+    </div><!--row-->
 }
