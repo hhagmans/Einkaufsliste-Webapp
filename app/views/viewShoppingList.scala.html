@@ -1,0 +1,34 @@
+@(shoppingList : ShoppingList)
+
+@main {
+  <div class="row">
+    <div class="page-header">
+      <h1>Einkaufsliste <small>@shoppingList.getDate().format("dd.MM.yyyy")</small></h1>
+    </div><!--page-header-->
+  </div><!--row-->
+    	<table class="table table-striped">
+	    	<thead>
+	    		<tr>
+	    			<th>Artikel</th>
+	    			<th>Kategorie</th>
+	    			<th>Abgehakt</th>
+	    		</tr>
+	    	</thead>
+	    	<tbody class="tablebody">
+	    	@for((article,index) <- shoppingList.getArticles().zipWithIndex) {
+	    	<tr class="articlerow">
+              <td>
+                 <p>@article.getName()</p>
+              </td>
+		  	  <td>
+	  			<p>@article.getCategory()</p>
+            </td>
+            <td>
+	  			@if(article.isChecked()) {<span class="fa fa-check fa-2x"></span>}
+            </td>
+		 </tr>
+		 }
+        </tbody>
+    	</table>
+    </div><!--row-->
+}

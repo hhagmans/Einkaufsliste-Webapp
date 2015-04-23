@@ -1,4 +1,3 @@
-@import org.joda.time.DateTime
 @(content: Html)
 <!DOCTYPE html>
 
@@ -17,9 +16,15 @@
   		<script src="@routes.Assets.at("javascripts/jquery-ui.min.js")"></script>
   		<script src="@routes.Assets.at("javascripts/bootstrap.js")"></script>
 
+@selectOptions(article : Article) = {<option value="0" >Fleisch und Fisch</option> <option value="1">Gem&uuml;se und Obst</option> <option value="2">Kochen und Backen</option> <option value="3">Milchprodukte</option> <option value="4">Tiefk&uuml;hlprodukte</option> <option value="5">Getr&auml;nke</option> <option value="6">S&uuml;&szlig;igkeiten</option> <option value="7">Haushalt</option> <option value="8">Sonstiges</option>}
+
 	<script type="text/javascript">
 	$(document).ready(function() {
 		$( "#date" ).datepicker({ dateFormat: 'dd.mm.yy' });
+		$('.addArticle').click(function(){
+			var n = $( ".articlerow" ).length;
+			$( ".tablebody" ).append( '<tr class="articlerow"> <td> <div class="form-group" id="divArticle"> <label for="articleInput">Artikel</label> <input type="text" class="form-control" id="articleInput" name="article' + n + '"> </div> </td> <td><div id="divCategory"> <label for="categoryInput">Kategorie</label> <select class="form-control" id="categoryInput" name="category' + n + '"> @selectOptions(null) </select> </div> </td> </tr>' );
+            });
 	});
 	</script>
 

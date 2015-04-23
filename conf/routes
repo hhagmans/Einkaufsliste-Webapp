@@ -11,5 +11,26 @@ GET     /shoppingList                           controllers.Application.createSh
 # Create ShoppingList Save
 POST     /shoppingList/save                           controllers.Application.createShoppingListSave()
 
+# View ShoppingList
+GET     /shoppingList&id=:id                      controllers.Application.viewShoppingList(id: Int)
+
+# Edit ShoppingList
+GET     /shoppingList&id=:id/edit                           controllers.Application.editShoppingList(id: Int)
+
+# Edit ShoppingList Save
+POST     /shoppingList6id=:id/save                           controllers.Application.editShoppingListSave(id : Int)
+
+# Delete ShoppingList
+GET     /shoppingList&id=:id/delete                           controllers.Application.deleteShoppingList(id: Int)
+
+# Delete Article
+GET     /shoppingList&id=:id&articleId=:articleId/deleteArticle                           controllers.Application.deleteArticle(id: Int, articleId: Int)
+
+# Check Article
+GET     /article&id=:id/check					                        controllers.Application.checkArticle(id: Int)
+
+# Uncheck Article
+GET     /article&id=:id/uncheck					                        controllers.Application.uncheckArticle(id: Int)
+
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)

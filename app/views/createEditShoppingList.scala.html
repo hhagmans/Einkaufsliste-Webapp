@@ -1,0 +1,118 @@
+@(shoppingList : ShoppingList)
+
+@selectOptions(article : Article) = {
+<option value="0" @if(article != null && article.getCategory().equals(Category.FLEISCHFISCH)) {selected}>Fleisch und Fisch</option>
+<option value="1" @if(article != null && article.getCategory().equals(Category.GEMUESEOBST)) {selected}>Gem&uuml;se und Obst</option>
+<option value="2" @if(article != null && article.getCategory().equals(Category.KOCHENBACKEN)) {selected}>Kochen und Backen</option>
+<option value="3" @if(article != null && article.getCategory().equals(Category.MILCHPRODUKTE)) {selected}>Milchprodukte</option>
+<option value="4" @if(article != null && article.getCategory().equals(Category.TIEFKUEHLPRODUKTE)) {selected}>Tiefk&uuml;hlprodukte</option>
+<option value="5" @if(article != null && article.getCategory().equals(Category.GETRAENKE)) {selected}>Getr&auml;nke</option>
+<option value="6" @if(article != null && article.getCategory().equals(Category.SUESSIGKEITEN)) {selected}>S&uuml;&szlig;igkeiten</option>
+<option value="7" @if(article != null && article.getCategory().equals(Category.HAUSHALT)) {selected}>Haushalt</option>
+<option value="8" @if(article != null && article.getCategory().equals(Category.SONSTIGES)) {selected}>Sonstiges</option>
+}
+
+@main {
+  <div class="row">
+    <div class="page-header">
+      <h1>Neue Einkaufsliste</h1>
+    </div><!--page-header-->
+  </div><!--row-->
+    <div class="row">
+    @if(shoppingList == null) {
+    @helper.form(action=routes.Application.createShoppingListSave()) {
+    <div class="form-group" id="divDate">
+		<label for="date">Datum</label>
+		<input type="text" class="form-control" id="date" name="date">
+    </div>
+    	<table class="table table-striped">
+	    	<thead>
+	    		<tr>
+	    			<th></th>
+	    			<th></th>
+	    		</tr>
+	    	</thead>
+	    	<tbody class="tablebody">
+		    <tr class="articlerow">
+              <td>
+                 <div class="form-group" id="divArticle">
+			            <label for="articleInput">Artikel</label>
+			            <input type="text" class="form-control" id="articleInput" name="article0">
+			        </div>
+              </td>
+		  	  <td>
+	  			<div id="divCategory">
+	  			<label for="categoryInput">Kategorie</label>
+	              <select class="form-control" id="categoryInput" name="category0">
+	                @selectOptions(null)
+	              </select>
+            </div>
+            </td>
+		 </tr>
+        </tbody>
+    	</table>
+    </div><!--row-->
+    <div class="row">
+      <div class="col-md-2">
+    <a type="button" class="btn btn-default addArticle">Neuer Artikel</a> 
+    </div><!--col-md-2-->
+      <div class="col-md-2">
+        <button type="submit" class="btn btn-primary">Einkaufsliste erstellen</button>
+      </div><!--col-md-2-->
+      <div class="col-md-8"></div>
+    </div><!--row-->
+    }
+    } else {
+    	@helper.form(action=routes.Application.editShoppingListSave(shoppingList.getId())) {
+    <div class="form-group" id="divDate">
+		<label for="date">Datum</label>
+		<input type="text" class="form-control" id="date" name="date" value="@shoppingList.getDate().format("dd.MM.yyyy")">
+    </div>
+    	<table class="table table-striped">
+	    	<thead>
+	    		<tr>
+	    			<th></th>
+	    			<th></th>
+	    		</tr>
+	    	</thead>
+	    	<tbody class="tablebody">
+	    	@for((article,index) <- shoppingList.getArticles().zipWithIndex) {
+	    	<tr class="articlerow">
+              <td>
+                 <div class="form-group" id="divArticle">
+			            <label for="articleInput">Artikel</label>
+			            <input type="text" class="form-control" id="articleInput" name="article@index" value="@article.getName()">
+			            <input type="text" class="form-control" id="articleIdInput" name="articleId@index" value="@article.getId()" style="display: None">
+			        </div>
+              </td>
+		  	  <td>
+	  			<div id="divCategory">
+	  			<label for="categoryInput">Kategorie</label>
+	              <select class="form-control" id="categoryInput" name="category@index">
+	                @selectOptions(article)
+	              </select>
+            </div>
+            </td>
+            <td>
+					<a href ="@routes.Application.deleteArticle(shoppingList.getId(), article.getId())" type="button" class="btn btn-danger btn" onclick="return confirm('Sind Sie sicher?');"
+              title="löschen">
+				  <span class="fa fa-trash fa-2x"></span>
+					</a>
+				</td>
+		 </tr>
+		 }
+        </tbody>
+    	</table>
+    </div><!--row-->
+    <div class="row">
+    <div class="col-md-2">
+    <a type="button" class="btn btn-default addArticle">Neuer Artikel</a> 
+    </div><!--col-md-2-->
+      <div class="col-md-2">
+        <button type="submit" class="btn btn-primary">Einkaufsliste speichern</button>
+      </div><!--col-md-2-->
+      <div class="col-md-8"></div>
+    </div><!--row-->
+    }
+    }
+}

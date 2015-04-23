@@ -13,12 +13,13 @@ public class Article {
 	private int id;
 	private String name;
 	private Category category;
+	private boolean checked = false;
 
-	private Article() {
+	public Article() {
 
 	}
 
-	private Article(String name, Category category) {
+	public Article(String name, Category category) {
 		this.name = name;
 		this.category = category;
 	}
@@ -41,5 +42,17 @@ public class Article {
 
 	public void setCategory(Category category) {
 		this.category = category;
+	}
+
+	public boolean isChecked() {
+		return checked;
+	}
+
+	public void checkArticle() {
+		this.checked = true;
+	}
+
+	public void uncheckArticle() {
+		this.checked = false;
 	}
 }

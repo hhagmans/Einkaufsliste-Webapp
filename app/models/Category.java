@@ -2,7 +2,10 @@ package models;
 
 public enum Category {
 
-	DELIVERY("DELIVERY"), DRIVE("DRIVE"), WALK("WALK");
+	FLEISCHFISCH("Fleisch und Fisch"), GEMUESEOBST("Gemüse und Obst"), KOCHENBACKEN(
+			"Kochen und Backen"), MILCHPRODUKTE("Milchprodukte"), TIEFKUEHLPRODUKTE(
+			"Tiefkühlprodukte"), GETRAENKE("Getränke"), SUESSIGKEITEN(
+			"Süßigkeiten"), HAUSHALT("Haushalt"), SONSTIGES("Sonstiges");
 
 	private String categoryName;
 
