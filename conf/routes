@@ -32,5 +32,11 @@ GET     /article&id=:id/check					                        controllers.Applicatio
 # Uncheck Article
 GET     /article&id=:id/uncheck					                        controllers.Application.uncheckArticle(id: Int)
 
+# Get Article as Json
+GET     /article&id=:id/json				                        controllers.JsonController.getArticleAsJson(id: Int)
+
+# Get current ShoppingList as Json
+GET     /shoppingList/current/json				                        controllers.JsonController.getCurrentShoppingListAsJson()
+
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)
