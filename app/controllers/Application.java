@@ -171,7 +171,9 @@ public class Application extends Controller {
 			JPA.em().persist(list);
 			list.setArticles(articles);
 			list.setShopOrder(shopOrder);
+			shopOrder.setShoppingList(list);
 			JPA.em().merge(list);
+			JPA.em().merge(shopOrder);
 			flash("success", "Neue Einkaufsliste erfolgreich erstellt!");
 			return redirect(controllers.routes.Application.index());
 		}
@@ -225,7 +227,6 @@ public class Application extends Controller {
 		int i = 0;
 		List<Article> articles = new ArrayList<Article>();
 		while (true) {
-			System.out.println(bindedForm.get("article" + i));
 			if (bindedForm.get("article" + i) == null) {
 				break;
 			} else if (bindedForm.get("article" + i) == "") {
@@ -265,7 +266,9 @@ public class Application extends Controller {
 			JPA.em().merge(list);
 			list.addArticles(articles);
 			list.setShopOrder(shopOrder);
+			shopOrder.setShoppingList(list);
 			JPA.em().merge(list);
+			JPA.em().merge(shopOrder);
 			flash("success", "Einkaufsliste erfolgreich bearbeitet!");
 			return redirect(controllers.routes.Application.index());
 		}

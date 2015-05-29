@@ -28,7 +28,7 @@ public class ShoppingList {
 	@Temporal(TemporalType.DATE)
 	private Date date;
 
-	@OneToOne(cascade = CascadeType.REMOVE)
+	@OneToOne
 	private ShopOrder shopOrder = null;
 
 	@OneToMany(cascade = CascadeType.REMOVE)
@@ -149,6 +149,64 @@ public class ShoppingList {
 	}
 
 	public List<Article> getArticles() {
+		ArrayList<Article> fleischArticles = new ArrayList<Article>();
+		ArrayList<Article> gemuseArticles = new ArrayList<Article>();
+		ArrayList<Article> kochenArticles = new ArrayList<Article>();
+		ArrayList<Article> milchArticles = new ArrayList<Article>();
+		ArrayList<Article> tiefkuhlArticles = new ArrayList<Article>();
+		ArrayList<Article> getraenkeArticles = new ArrayList<Article>();
+		ArrayList<Article> sussArticles = new ArrayList<Article>();
+		ArrayList<Article> haushaltArticles = new ArrayList<Article>();
+		ArrayList<Article> sonstigesArticles = new ArrayList<Article>();
+
+		for (Article article : this.articles) {
+			if (article.getCategory().equals(Category.FLEISCHFISCH)) {
+				fleischArticles.add(article);
+			} else if (article.getCategory().equals(Category.GEMUESEOBST)) {
+				gemuseArticles.add(article);
+			} else if (article.getCategory().equals(Category.KOCHENBACKEN)) {
+				kochenArticles.add(article);
+			} else if (article.getCategory().equals(Category.MILCHPRODUKTE)) {
+				milchArticles.add(article);
+			} else if (article.getCategory().equals(Category.TIEFKUEHLPRODUKTE)) {
+				tiefkuhlArticles.add(article);
+			} else if (article.getCategory().equals(Category.GETRAENKE)) {
+				getraenkeArticles.add(article);
+			} else if (article.getCategory().equals(Category.SUESSIGKEITEN)) {
+				sussArticles.add(article);
+			} else if (article.getCategory().equals(Category.HAUSHALT)) {
+				haushaltArticles.add(article);
+			} else if (article.getCategory().equals(Category.SONSTIGES)) {
+				sonstigesArticles.add(article);
+			}
+		}
+
+		ArrayList<Article> articles = new ArrayList<Article>();
+		for (Category category : shopOrder.getCategoriesAsCategory()) {
+			if (category.equals(Category.FLEISCHFISCH)) {
+				articles.addAll(fleischArticles);
+			} else if (category.equals(Category.GEMUESEOBST)) {
+				articles.addAll(gemuseArticles);
+			} else if (category.equals(Category.KOCHENBACKEN)) {
+				articles.addAll(kochenArticles);
+			} else if (category.equals(Category.MILCHPRODUKTE)) {
+				articles.addAll(milchArticles);
+			} else if (category.equals(Category.TIEFKUEHLPRODUKTE)) {
+				articles.addAll(tiefkuhlArticles);
+			} else if (category.equals(Category.GETRAENKE)) {
+				articles.addAll(getraenkeArticles);
+			} else if (category.equals(Category.SUESSIGKEITEN)) {
+				articles.addAll(sussArticles);
+			} else if (category.equals(Category.HAUSHALT)) {
+				articles.addAll(haushaltArticles);
+			} else if (category.equals(Category.SONSTIGES)) {
+				articles.addAll(sonstigesArticles);
+			}
+		}
+		return articles;
+	}
+
+	public List<Article> getArticlesUnsorted() {
 		return articles;
 	}
 

@@ -46,13 +46,17 @@ public class ShopOrderController extends Controller {
 
 		String name = bindedForm.get("name");
 		String order = bindedForm.get("order");
-		System.out.println(order);
-		List<String> orderArray = Arrays.asList(order.split("\\s*,\\s*"));
 		ArrayList<Integer> categories = new ArrayList<Integer>();
-		int i = 0;
-		for (String ord : orderArray) {
-			System.out.println(ord);
-			categories.add(Integer.parseInt(ord));
+		if (order != "") {
+			List<String> orderArray = Arrays.asList(order.split("\\s*,\\s*"));
+			int i = 0;
+			for (String ord : orderArray) {
+				categories.add(Integer.parseInt(ord));
+			}
+		} else {
+			for (int i = 0; i < 9; i++) {
+				categories.add(i);
+			}
 		}
 
 		ShopOrder shopOrder = new ShopOrder(name, categories);
