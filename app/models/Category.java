@@ -26,4 +26,12 @@ public enum Category {
 		this.categoryName = categoryName;
 	}
 
+	public static Category getCategoryByIndex(int index) {
+		Category categories[] = new Category[] { Category.FLEISCHFISCH,
+				Category.GEMUESEOBST, Category.KOCHENBACKEN,
+				Category.MILCHPRODUKTE, Category.TIEFKUEHLPRODUKTE,
+				Category.GETRAENKE, Category.SUESSIGKEITEN, Category.HAUSHALT,
+				Category.SONSTIGES };
+		return categories[index];
+	}
 }

@@ -1,0 +1,54 @@
+@(allShopOrders: List[ShopOrder])
+
+@main {
+  <div class="row">
+    <div class="page-header">
+      <h1>ShopOrders</h1>
+    </div><!--page-header-->
+  </div><!--row-->
+    <div class="row">
+    	<table class="table table-striped">
+	    	<thead>
+	    		<tr>
+	    			<th></th>
+	    			<th></th>
+	    			<th></th>
+	    		</tr>
+	    	</thead>
+	    	<tbody>
+	    	@if(!allShopOrders.isEmpty()) {
+	    		@for(order <- allShopOrders) {
+		    		<tr>
+              <td>
+                <a class="lead" href="@routes.ShopOrderController.viewShopOrder(order.getId())">
+                  @order.getName()
+                </p>
+              </td>
+		  				<td>
+		  						<a href="@routes.ShopOrderController.editShopOrder(order.getId())" type="button" class="btn btn-primary btn" title="bearbeiten">
+                    <span class="fa fa-pencil fa-2x"></span>
+		  				</td>
+		  				<td>
+		  						<a href ="@routes.ShopOrderController.deleteShopOrder(order.getId())" type="button" class="btn btn-danger btn" onclick="return confirm('Sind Sie sicher?');"
+                  title="löschen">
+								  <span class="fa fa-trash fa-2x"></span>
+		  				</td>
+		  			</tr>
+          }
+          } else {
+          Noch keine ShopOrders vorhanden
+          }
+        </tbody>
+    	</table>
+    </div><!--row-->
+    <div class="row">
+      <div class="col-md-2">
+        <a href="@routes.ShopOrderController.createShopOrder()" type="button" class="btn btn-default" title="neue ShopOrder">
+  				<span class="fa fa-shopping-cart fa-3x">
+            Neu
+          </span>
+  			</a>
+      </div><!--col-md-2-->
+      <div class="col-md-10"></div>
+    </div><!--row-->
+}

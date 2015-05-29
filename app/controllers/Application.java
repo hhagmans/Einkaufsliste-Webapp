@@ -11,6 +11,7 @@ import java.util.List;
 
 import models.Article;
 import models.Category;
+import models.ShopOrder;
 import models.ShoppingList;
 import play.data.DynamicForm;
 import play.db.jpa.JPA;
@@ -96,8 +97,13 @@ public class Application extends Controller {
 				.render(JPA.em().find(ShoppingList.class, id)));
 	}
 
+	@Transactional
 	public static Result createShoppingList() {
-		return ok(createEditShoppingList.render(null));
+		return ok(createEditShoppingList.render(
+				null,
+				JPA.em()
+						.createQuery("Select s from ShopOrder s",
+								ShopOrder.class).getResultList()));
 	}
 
 	@Transactional
@@ -108,16 +114,32 @@ public class Application extends Controller {
 			date = getDateFromForm(bindedForm.get("date"));
 		} catch (ParseException e) {
 			flash("error", "Datum nicht im richtigen Format");
-			return ok(createEditShoppingList.render(null));
+			return ok(createEditShoppingList.render(
+					null,
+					JPA.em()
+							.createQuery("Select s from ShopOrder s",
+									ShopOrder.class).getResultList()));
 		}
 		if (isDateInPast(date)) {
 			flash("error", "Das gewählte Datum ist in der Vergangenheit");
-			return ok(createEditShoppingList.render(null));
+			return ok(createEditShoppingList.render(
+					null,
+					JPA.em()
+							.createQuery("Select s from ShopOrder s",
+									ShopOrder.class).getResultList()));
 		} else if (ShoppingList.shoppingListExistsAtDate(date)) {
 			flash("error",
 					"Es existiert bereits eine Einkaufsliste an diesem Tag");
-			return ok(createEditShoppingList.render(null));
+			return ok(createEditShoppingList.render(
+					null,
+					JPA.em()
+							.createQuery("Select s from ShopOrder s",
+									ShopOrder.class).getResultList()));
 		}
+
+		ShopOrder shopOrder = JPA.em().find(ShopOrder.class,
+				Integer.parseInt(bindedForm.get("shopOrder")));
+
 		int i = 0;
 		List<Article> articles = new ArrayList<Article>();
 		while (true) {
@@ -139,11 +161,16 @@ public class Application extends Controller {
 
 		if (date == null) {
 			flash("error", "Datum nicht im richtigen Format");
-			return ok(createEditShoppingList.render(null));
+			return ok(createEditShoppingList.render(
+					null,
+					JPA.em()
+							.createQuery("Select s from ShopOrder s",
+									ShopOrder.class).getResultList()));
 		} else {
 			ShoppingList list = ShoppingList.createhoppingList(date);
 			JPA.em().persist(list);
 			list.setArticles(articles);
+			list.setShopOrder(shopOrder);
 			JPA.em().merge(list);
 			flash("success", "Neue Einkaufsliste erfolgreich erstellt!");
 			return redirect(controllers.routes.Application.index());
@@ -152,8 +179,11 @@ public class Application extends Controller {
 
 	@Transactional
 	public static Result editShoppingList(int id) {
-		return ok(createEditShoppingList.render(JPA.em().find(
-				ShoppingList.class, id)));
+		return ok(createEditShoppingList.render(
+				JPA.em().find(ShoppingList.class, id),
+				JPA.em()
+						.createQuery("Select s from ShopOrder s",
+								ShopOrder.class).getResultList()));
 	}
 
 	@Transactional
@@ -165,17 +195,33 @@ public class Application extends Controller {
 			date = getDateFromForm(bindedForm.get("date"));
 		} catch (ParseException e) {
 			flash("error", "Datum nicht im richtigen Format");
-			return ok(createEditShoppingList.render(list));
+			return ok(createEditShoppingList.render(
+					list,
+					JPA.em()
+							.createQuery("Select s from ShopOrder s",
+									ShopOrder.class).getResultList()));
 		}
 		if (isDateInPast(date)) {
 			flash("error", "Das gewählte Datum ist in der Vergangenheit");
-			return ok(createEditShoppingList.render(list));
+			return ok(createEditShoppingList.render(
+					list,
+					JPA.em()
+							.createQuery("Select s from ShopOrder s",
+									ShopOrder.class).getResultList()));
 		} else if (!list.getDate().equals(date)
 				&& ShoppingList.shoppingListExistsAtDate(date)) {
 			flash("error",
 					"Es existiert bereits eine Einkaufsliste an diesem Tag");
-			return ok(createEditShoppingList.render(list));
+			return ok(createEditShoppingList.render(
+					list,
+					JPA.em()
+							.createQuery("Select s from ShopOrder s",
+									ShopOrder.class).getResultList()));
 		}
+
+		ShopOrder shopOrder = JPA.em().find(ShopOrder.class,
+				Integer.parseInt(bindedForm.get("shopOrder")));
+
 		int i = 0;
 		List<Article> articles = new ArrayList<Article>();
 		while (true) {
@@ -209,11 +255,16 @@ public class Application extends Controller {
 
 		if (date == null) {
 			flash("error", "Datum nicht im richtigen Format");
-			return ok(createEditShoppingList.render(list));
+			return ok(createEditShoppingList.render(
+					list,
+					JPA.em()
+							.createQuery("Select s from ShopOrder s",
+									ShopOrder.class).getResultList()));
 		} else {
 			list.setDate(date);
 			JPA.em().merge(list);
 			list.addArticles(articles);
+			list.setShopOrder(shopOrder);
 			JPA.em().merge(list);
 			flash("success", "Einkaufsliste erfolgreich bearbeitet!");
 			return redirect(controllers.routes.Application.index());

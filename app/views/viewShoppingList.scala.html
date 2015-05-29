@@ -6,6 +6,12 @@
       <h1>Einkaufsliste <small>@shoppingList.getDate().format("dd.MM.yyyy")</small></h1>
     </div><!--page-header-->
   </div><!--row-->
+  
+  <div class="form-group" id="divName">
+		<label for="name">ShopOrder</label>
+		<input type="text" class="form-control" id="name" value="@shoppingList.getShopOrderName()" readonly>
+</div>
+  
     	<table class="table table-striped">
 	    	<thead>
 	    		<tr>

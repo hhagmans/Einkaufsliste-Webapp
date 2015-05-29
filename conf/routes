@@ -6,7 +6,7 @@
 GET     /                           controllers.Application.index()
 
 # Create ShoppingList
-GET     /shoppingList                           controllers.Application.createShoppingList()
+GET     /shoppingList/create                         controllers.Application.createShoppingList()
 
 # Create ShoppingList Save
 POST     /shoppingList/save                           controllers.Application.createShoppingListSave()
@@ -18,7 +18,7 @@ GET     /shoppingList&id=:id                      controllers.Application.viewSh
 GET     /shoppingList&id=:id/edit                           controllers.Application.editShoppingList(id: Int)
 
 # Edit ShoppingList Save
-POST     /shoppingList6id=:id/save                           controllers.Application.editShoppingListSave(id : Int)
+POST     /shoppingList&id=:id/save                           controllers.Application.editShoppingListSave(id : Int)
 
 # Delete ShoppingList
 GET     /shoppingList&id=:id/delete                           controllers.Application.deleteShoppingList(id: Int)
@@ -37,6 +37,27 @@ GET     /article&id=:id/json				                        controllers.JsonControll
 
 # Get current ShoppingList as Json
 GET     /shoppingList/current/json				                        controllers.JsonController.getCurrentShoppingListAsJson()
+
+# View ShopOrders
+GET     /shoporder/			                        controllers.ShopOrderController.viewShopOrders()
+
+# View ShopOrder
+GET     /shoporder&id=:id                         controllers.ShopOrderController.viewShopOrder(id: Int)
+
+# Create ShopOrder
+GET     /shoporder/create                           controllers.ShopOrderController.createShopOrder()
+
+# Create ShopOrder Save
+POST     /shoporder/save                           controllers.ShopOrderController.createShopOrderSave()
+
+# Edit ShopOrder
+GET     /shoporder&id=:id/edit                           controllers.ShopOrderController.editShopOrder(id: Int)
+
+# Edit ShopOrder Save
+POST     /shoporder&id=:id/save                           controllers.ShopOrderController.editShopOrderSave(id : Int)
+
+# Delete ShopOrder
+GET     /shoporder&id=:id/delete                           controllers.ShopOrderController.deleteShopOrder(id: Int)
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)

@@ -13,6 +13,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
@@ -27,6 +28,9 @@ public class ShoppingList {
 	@Temporal(TemporalType.DATE)
 	private Date date;
 
+	@OneToOne(cascade = CascadeType.REMOVE)
+	private ShopOrder shopOrder = null;
+
 	@OneToMany(cascade = CascadeType.REMOVE)
 	@JoinTable(name = "ShoppingList_Articles", joinColumns = { @JoinColumn(name = "ShoppingList_Id", referencedColumnName = "id") }, inverseJoinColumns = { @JoinColumn(name = "Article_Id", referencedColumnName = "id", unique = true) })
 	private List<Article> articles = new ArrayList<Article>();;
@@ -39,9 +43,10 @@ public class ShoppingList {
 		this.date = date;
 	}
 
-	public ShoppingList(Date date, List<Article> articles) {
+	public ShoppingList(Date date, List<Article> articles, ShopOrder shopOrder) {
 		this.date = date;
 		this.articles = articles;
+		this.shopOrder = shopOrder;
 	}
 
 	public static List<ShoppingList> getCurrentShoppingLists() {
@@ -125,6 +130,22 @@ public class ShoppingList {
 
 	public void setDate(Date date) {
 		this.date = date;
+	}
+
+	public ShopOrder getShopOrder() {
+		return shopOrder;
+	}
+
+	public String getShopOrderName() {
+		if (shopOrder != null) {
+			return shopOrder.getName();
+		} else {
+			return "Unsortiert";
+		}
+	}
+
+	public void setShopOrder(ShopOrder shopOrder) {
+		this.shopOrder = shopOrder;
 	}
 
 	public List<Article> getArticles() {

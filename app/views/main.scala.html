@@ -20,6 +20,15 @@
 
 	<script type="text/javascript">
 	$(document).ready(function() {
+		
+		$('#sortable').sortable({
+	        update: function(event, ui) {
+	        	var sortedIDs = $( "#sortable" ).sortable( "toArray" );
+	        	$('#order').val(sortedIDs);
+	        }
+	    });
+		
+		
 		$( "#date" ).datepicker({ dateFormat: 'dd.mm.yy' });
 		$('.addArticle').click(function(){
 			var n = $( ".articlerow" ).length;
@@ -49,6 +58,7 @@
           <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
               <ul class="nav navbar-nav">
                 <li><a href="/">Einkaufslisten <span class="sr-only">(current)</span></a></li>
+                <li><a href="@routes.ShopOrderController.viewShopOrders()">Shoporders</a></li>
               </ul>
             </div><!-- /.navbar-collapse -->
           </div><!-- /.container-fluid -->

@@ -1,4 +1,4 @@
-@(shoppingList : ShoppingList)
+@(shoppingList : ShoppingList)(shopOrders : List[ShopOrder])
 
 @selectOptions(article : Article) = {
 <option value="0" @if(article != null && article.getCategory().equals(Category.FLEISCHFISCH)) {selected}>Fleisch und Fisch</option>
@@ -24,6 +24,15 @@
     <div class="form-group" id="divDate">
 		<label for="date">Datum</label>
 		<input type="text" class="form-control" id="date" name="date">
+    </div>
+    <div id="divShopOrder">
+		  <label for="shopOrderInput">ShopOrder</label>
+          <select class="form-control" id="shopOrderInput" name="shopOrder">
+          <option value="0">Unsortiert</option>
+            @for(shopOrder <- shopOrders) {
+            <option value="@shopOrder.getId()">@shopOrder.getName()</option>
+            }
+          </select>
     </div>
     	<table class="table table-striped">
 	    	<thead>
@@ -72,6 +81,16 @@
 		<label for="date">Datum</label>
 		<input type="text" class="form-control" id="date" name="date" value="@shoppingList.getDate().format("dd.MM.yyyy")">
     </div>
+    <div id="divShopOrder">
+		  <label for="shopOrderInput">ShopOrder</label>
+          <select class="form-control" id="shopOrderInput" name="shopOrder">
+          <option value="0" @if(shoppingList.getShopOrder() == null) {selected}>Unsortiert</option>
+            @for(shopOrder <- shopOrders) {
+            <option value="@shopOrder.getId()" @if(shoppingList.getShopOrder() != null && shoppingList.getShopOrder().getId().equals(shopOrder.getId())) {selected}>@shopOrder.getName()</option>
+            }
+          </select>
+    </div>
+    
     	<table class="table table-striped">
 	    	<thead>
 	    		<tr>

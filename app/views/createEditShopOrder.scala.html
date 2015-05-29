@@ -1,0 +1,92 @@
+@(shopOrder : ShopOrder)
+
+@getOption(index : Int) = {
+@if(index == 0) {
+  <li class="ui-state-default" id="0"> Fleisch und Fisch</li>
+  } @if(index == 1) {
+  <li class="ui-state-default" id="1">Gem&uuml;se und Obst</li>
+  } @if(index == 2) {
+  <li class="ui-state-default" id="2">Kochen und Backen</li>
+  } @if(index == 3) { 
+  <li class="ui-state-default" id="3">Milchprodukte</li>
+  } @if(index == 4) {
+  <li class="ui-state-default" id="4">Tiefk&uuml;hlprodukte</li>
+  } @if(index == 5) {
+  <li class="ui-state-default" id="5">Getr&auml;nke</li>
+  } @if(index == 6) {
+  <li class="ui-state-default" id="6">S&uuml;&szlig;igkeiten</li>
+  } @if(index == 7) {
+  <li class="ui-state-default" id="7">Haushalt</li>
+  } @if(index == 8) {
+  <li class="ui-state-default" id="8">Sonstiges</li>
+  }
+}
+
+@main {
+
+<div class="row">
+    <div class="page-header">
+      <h1>@if(shopOrder == null) {Neue ShopOrder} else {ShopOrder @shopOrder.getName()}</h1>
+    </div><!--page-header-->
+  </div><!--row-->
+
+@if(shopOrder == null) {
+@helper.form(action=routes.ShopOrderController.createShopOrderSave()) {
+<div class="form-group" id="divName">
+		<label for="name">Name</label>
+		<input type="text" class="form-control" id="name" name="name">
+</div>
+
+<ul id="sortable">
+  <li class="ui-state-default" id="0">Fleisch und Fisch</li>
+  <li class="ui-state-default" id="1">Gem&uuml;se und Obst</li>
+  <li class="ui-state-default" id="2">Kochen und Backen</li>
+  <li class="ui-state-default" id="3">Milchprodukte</li>
+  <li class="ui-state-default" id="4">Tiefk&uuml;hlprodukte</li>
+  <li class="ui-state-default" id="5">Getr&auml;nke</li>
+  <li class="ui-state-default" id="6">S&uuml;&szlig;igkeiten</li>
+  <li class="ui-state-default" id="7">Haushalt</li>
+  <li class="ui-state-default" id="8">Sonstiges</li>
+</ul>
+
+  <input type="hidden" class="form-control" id="order" name="order">
+  <br>
+  
+  <div class="row">
+      <div class="col-md-2">
+        <button type="submit" class="btn btn-primary">Shoporder erstellen</button>
+      </div><!--col-md-2-->
+    <div class="col-md-2">
+    <a href="@routes.ShopOrderController.viewShopOrders()" type="button" class="btn btn-default">Zur&uuml;ck</a> 
+    </div><!--col-md-2-->
+      <div class="col-md-6"></div>
+    </div><!--row-->
+  }
+  } else {
+  	@helper.form(action=routes.ShopOrderController.editShopOrderSave(shopOrder.getId())) {
+<div class="form-group" id="divName">
+		<label for="name">Name</label>
+		<input type="text" class="form-control" id="name" name="name" value="@shopOrder.getName()">
+</div>
+<ul id="sortable">
+  @for(index <- shopOrder.getCategories()) {
+  @getOption(index)
+  }
+</ul>
+
+  <input type="hidden" class="form-control" id="order" name="order">
+  <br>
+  
+  <div class="row">
+      <div class="col-md-2">
+        <button type="submit" class="btn btn-primary">ShopOrder speichern</button>
+      </div><!--col-md-2-->
+     <div class="col-md-2"> </div>
+    <div class="col-md-2">
+    <a href="@routes.ShopOrderController.viewShopOrders()" type="button" class="btn btn-default">Zur&uuml;ck</a> 
+    </div><!--col-md-2-->
+      <div class="col-md-6"></div>
+    </div><!--row-->
+  }
+  }
+}
