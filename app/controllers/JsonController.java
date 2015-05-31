@@ -27,7 +27,7 @@ public class JsonController extends Controller {
 		List<Article> list = ShoppingList.getCurrentShoppingList()
 				.getArticles();
 		if (list != null) {
-			return ok(Json.toJson(list));
+			return ok(Json.toJson(list.toArray()));
 		} else {
 			return notFound();
 		}
