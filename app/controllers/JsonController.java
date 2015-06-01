@@ -1,7 +1,5 @@
 package controllers;
 
-import java.util.List;
-
 import models.Article;
 import models.ShoppingList;
 import play.db.jpa.JPA;
@@ -24,10 +22,9 @@ public class JsonController extends Controller {
 
 	@Transactional
 	public static Result getCurrentShoppingListAsJson() {
-		List<Article> list = ShoppingList.getCurrentShoppingList()
-				.getArticles();
+		ShoppingList list = ShoppingList.getCurrentShoppingList();
 		if (list != null) {
-			return ok(Json.toJson(list.toArray()));
+			return ok(Json.toJson(list.getArticles().toArray()));
 		} else {
 			return notFound();
 		}
