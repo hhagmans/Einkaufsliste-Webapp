@@ -265,12 +265,14 @@ public class Application extends Controller {
 									ShopOrder.class).getResultList()));
 		} else {
 			list.setDate(date);
-			JPA.em().merge(list);
 			list.addArticles(articles);
-			list.setShopOrder(shopOrder);
-			shopOrder.setShoppingList(list);
 			JPA.em().merge(list);
-			JPA.em().merge(shopOrder);
+			if (shopOrder != null) {
+				list.setShopOrder(shopOrder);
+				shopOrder.setShoppingList(list);
+				JPA.em().merge(list);
+				JPA.em().merge(shopOrder);
+			}
 			flash("success", "Einkaufsliste erfolgreich bearbeitet!");
 			return redirect(controllers.routes.Application.index());
 		}
