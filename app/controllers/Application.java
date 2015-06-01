@@ -21,6 +21,7 @@ import org.whispersystems.gcm.server.Sender;
 import play.data.DynamicForm;
 import play.db.jpa.JPA;
 import play.db.jpa.Transactional;
+import play.libs.Json;
 import play.mvc.Controller;
 import play.mvc.Result;
 import views.html.createEditShoppingList;
@@ -283,6 +284,7 @@ public class Application extends Controller {
 				JPA.em().merge(shopOrder);
 			}
 
+			sendMessageToAndroid(Json.toJson(list).asText());
 			flash("success", "Einkaufsliste erfolgreich bearbeitet!");
 			return redirect(controllers.routes.Application.index());
 		}
@@ -293,7 +295,8 @@ public class Application extends Controller {
 		Sender sender = new Sender(apiKey);
 
 		ListenableFuture<org.whispersystems.gcm.server.Result> future = sender
-				.send(Message.newBuilder().withDestination("<registration_id>")
+				.send(Message.newBuilder()
+						.withDestination(User.createUser("test").getRegId())
 						.withDataPart("message", message).build());
 
 		Futures.addCallback(future,
@@ -330,6 +333,7 @@ public class Application extends Controller {
 		list.getArticles().remove(article);
 		JPA.em().merge(list);
 		JPA.em().remove(article);
+		sendMessageToAndroid(Json.toJson(list).asText());
 		flash("success", "Artikel erfolgreich gelöscht!");
 		return redirect(controllers.routes.Application.editShoppingList(list
 				.getId()));
