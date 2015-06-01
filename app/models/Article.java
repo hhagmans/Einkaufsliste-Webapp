@@ -55,4 +55,11 @@ public class Article {
 	public void uncheckArticle() {
 		this.checked = false;
 	}
+
+	public void toggleArticle() {
+		if (this.checked)
+			this.uncheckArticle();
+		else
+			this.checkArticle();
+	}
 }

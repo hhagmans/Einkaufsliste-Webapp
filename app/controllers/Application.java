@@ -13,6 +13,11 @@ import models.Article;
 import models.Category;
 import models.ShopOrder;
 import models.ShoppingList;
+import models.User;
+
+import org.whispersystems.gcm.server.Message;
+import org.whispersystems.gcm.server.Sender;
+
 import play.data.DynamicForm;
 import play.db.jpa.JPA;
 import play.db.jpa.Transactional;
@@ -21,6 +26,10 @@ import play.mvc.Result;
 import views.html.createEditShoppingList;
 import views.html.index;
 import views.html.viewShoppingList;
+
+import com.google.common.util.concurrent.FutureCallback;
+import com.google.common.util.concurrent.Futures;
+import com.google.common.util.concurrent.ListenableFuture;
 
 public class Application extends Controller {
 
@@ -273,9 +282,38 @@ public class Application extends Controller {
 				JPA.em().merge(list);
 				JPA.em().merge(shopOrder);
 			}
+
 			flash("success", "Einkaufsliste erfolgreich bearbeitet!");
 			return redirect(controllers.routes.Application.index());
 		}
+	}
+
+	public static void sendMessageToAndroid(String message) {
+		String apiKey = "AIzaSyAQhPa81gGYoSCv8RDRAUZu_TBbG4aw-Jo";
+		Sender sender = new Sender(apiKey);
+
+		ListenableFuture<org.whispersystems.gcm.server.Result> future = sender
+				.send(Message.newBuilder().withDestination("<registration_id>")
+						.withDataPart("message", message).build());
+
+		Futures.addCallback(future,
+				new FutureCallback<org.whispersystems.gcm.server.Result>() {
+					@Override
+					public void onSuccess(
+							org.whispersystems.gcm.server.Result result) {
+						if (result.isSuccess()) {
+							// Maybe do something with result.getMessageId()
+						} else {
+							// Maybe do something with result.getError(), or
+							// check result.isUnregistered, etc..
+						}
+					}
+
+					@Override
+					public void onFailure(Throwable throwable) {
+						// Handle network failure or server 500
+					}
+				});
 	}
 
 	@Transactional
@@ -315,5 +353,23 @@ public class Application extends Controller {
 			JPA.em().merge(article);
 		}
 		return redirect(controllers.routes.Application.index());
+	}
+
+	@Transactional
+	public static Result setRegId(String name, String regId) {
+		User user = User.createUser(name);
+		user.setRegId(regId);
+		JPA.em().merge(user);
+		return redirect(controllers.routes.Application.index());
+	}
+
+	@Transactional
+	public static Result getRegId(String name) {
+		User user = User.createUser(name);
+		if (user.getRegId() != null) {
+			return ok(user.getRegId());
+		} else {
+			return notFound();
+		}
 	}
 }
