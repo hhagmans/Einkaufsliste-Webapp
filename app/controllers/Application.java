@@ -284,16 +284,15 @@ public class Application extends Controller {
 				JPA.em().merge(shopOrder);
 			}
 
-			sendMessageToAndroid(Json.toJson(list).asText());
+			sendMessageToAndroid(Json.toJson(list.getArticles()).asText());
 			flash("success", "Einkaufsliste erfolgreich bearbeitet!");
 			return redirect(controllers.routes.Application.index());
 		}
 	}
 
 	public static void sendMessageToAndroid(String message) {
-		String apiKey = "AIzaSyAQhPa81gGYoSCv8RDRAUZu_TBbG4aw-Jo";
+		String apiKey = "AIzaSyCDRNP43pRO-4yRra-cn4IWeN68BruKlRk";
 		Sender sender = new Sender(apiKey);
-
 		ListenableFuture<org.whispersystems.gcm.server.Result> future = sender
 				.send(Message.newBuilder()
 						.withDestination(User.createUser("test").getRegId())
@@ -305,16 +304,15 @@ public class Application extends Controller {
 					public void onSuccess(
 							org.whispersystems.gcm.server.Result result) {
 						if (result.isSuccess()) {
-							// Maybe do something with result.getMessageId()
+							System.out.println(result.getMessageId());
 						} else {
-							// Maybe do something with result.getError(), or
-							// check result.isUnregistered, etc..
+							System.out.println(result.getError());
 						}
 					}
 
 					@Override
 					public void onFailure(Throwable throwable) {
-						// Handle network failure or server 500
+						System.out.println("FAIL");
 					}
 				});
 	}
