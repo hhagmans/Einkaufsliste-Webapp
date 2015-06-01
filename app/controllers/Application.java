@@ -170,10 +170,12 @@ public class Application extends Controller {
 			ShoppingList list = ShoppingList.createhoppingList(date);
 			JPA.em().persist(list);
 			list.setArticles(articles);
-			list.setShopOrder(shopOrder);
-			shopOrder.setShoppingList(list);
-			JPA.em().merge(list);
-			JPA.em().merge(shopOrder);
+			if (shopOrder != null) {
+				list.setShopOrder(shopOrder);
+				shopOrder.setShoppingList(list);
+				JPA.em().merge(list);
+				JPA.em().merge(shopOrder);
+			}
 			flash("success", "Neue Einkaufsliste erfolgreich erstellt!");
 			return redirect(controllers.routes.Application.index());
 		}
