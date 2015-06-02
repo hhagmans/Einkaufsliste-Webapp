@@ -1,4 +1,4 @@
-@(content: Html)
+@(username: String)(content: Html)
 <!DOCTYPE html>
 
 <html>
@@ -59,6 +59,12 @@
               <ul class="nav navbar-nav">
                 <li><a href="/">Einkaufslisten <span class="sr-only">(current)</span></a></li>
                 <li><a href="@routes.ShopOrderController.viewShopOrders()">Shoporders</a></li>
+              </ul>
+              <ul class="nav navbar-nav navbar-right">
+              @if(username != null) {<li><a href="@routes.LoginController.logout()">Logout</a></li>}
+                <li>
+                    <a>@if(username == null) {Nicht eingeloggt} else {@username}</a>
+                </li>
               </ul>
             </div><!-- /.navbar-collapse -->
           </div><!-- /.container-fluid -->

@@ -1,4 +1,4 @@
-@(shopOrder : ShopOrder)
+@(username: String)(shopOrder : ShopOrder)
 
 @getOption(index : Int) = {
 @if(index == 0) {
@@ -22,7 +22,7 @@
   }
 }
 
-@main {
+@main(username) {
   <div class="row">
     <div class="page-header">
       <h1>ShopOrder @shopOrder.getName()</h1>

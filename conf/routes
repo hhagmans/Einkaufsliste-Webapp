@@ -5,6 +5,21 @@
 # Home page
 GET     /                           controllers.Application.index()
 
+# Login
+GET     /login                           controllers.LoginController.login()
+
+# Do Login
+GET     /dologin                           controllers.LoginController.doLogin()
+
+# Logout
+GET     /logout                           controllers.LoginController.logout()
+
+# Registrierung
+GET     /register                           controllers.LoginController.register()
+
+# Registrierung Save
+GET     /register/save                           controllers.LoginController.registerSave()
+
 # Create ShoppingList
 GET     /shoppingList/create                         controllers.Application.createShoppingList()
 
@@ -33,10 +48,10 @@ GET     /article&id=:id/check					                        controllers.Applicatio
 GET     /article&id=:id/uncheck					                        controllers.Application.uncheckArticle(id: Int)
 
 # Get Article as Json
-GET     /article&id=:id/json				                        controllers.JsonController.getArticleAsJson(id: Int)
+GET     /article&id=:id/json&username=:username&password=:password				                        controllers.JsonController.getArticleAsJson(id: Int, username: String, password: String)
 
 # Get current ShoppingList as Json
-GET     /shoppingList/current/json				                        controllers.JsonController.getCurrentShoppingListAsJson()
+GET     /shoppingList/current/json&username=:username&password=:password		                        controllers.JsonController.getCurrentShoppingListAsJson(username: String, password: String)
 
 # View ShopOrders
 GET     /shoporder/			                        controllers.ShopOrderController.viewShopOrders()
@@ -60,10 +75,10 @@ POST     /shoporder&id=:id/save                           controllers.ShopOrderC
 GET     /shoporder&id=:id/delete                           controllers.ShopOrderController.deleteShopOrder(id: Int)
 
 # Set Reg Key for User
-GET     /user&name=:name/regid=:regId                       controllers.Application.setRegId(name: String, regId: String)
+GET     /user&name=:name&password=:password/regid=:regId                       controllers.LoginController.setRegId(name: String, password: String, regId: String)
 
 # Get Reg Key for User
-GET     /user&name=:name/regid                      controllers.Application.getRegId(name: String)
+GET     /user&name=:name&password=:password/regid                      controllers.LoginController.getRegId(name: String, password: String)
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)

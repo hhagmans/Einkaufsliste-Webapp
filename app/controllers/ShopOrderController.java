@@ -7,37 +7,40 @@ import java.util.Arrays;
 import java.util.List;
 
 import models.ShopOrder;
+import models.User;
 import play.data.DynamicForm;
 import play.db.jpa.JPA;
 import play.db.jpa.Transactional;
 import play.mvc.Controller;
 import play.mvc.Result;
+import play.mvc.Security;
 import views.html.createEditShopOrder;
 import views.html.viewShopOrder;
 import views.html.viewShopOrders;
 
+@Security.Authenticated(LoginSecured.class)
 public class ShopOrderController extends Controller {
 
 	@Transactional
 	public static Result viewShopOrders() {
-		return ok(viewShopOrders.render(JPA.em()
-				.createQuery("Select s from ShopOrder s", ShopOrder.class)
-				.getResultList()));
+		return ok(viewShopOrders.render(session("username"),
+				JPA.em().find(User.class, session("username")).getShopOrders()));
 	}
 
 	@Transactional
 	public static Result viewShopOrder(int id) {
-		return ok(viewShopOrder.render(JPA.em().find(ShopOrder.class, id)));
+		return ok(viewShopOrder.render(session("username"),
+				JPA.em().find(ShopOrder.class, id)));
 	}
 
 	public static Result createShopOrder() {
-		return ok(createEditShopOrder.render(null));
+		return ok(createEditShopOrder.render(session("username"), null));
 	}
 
 	@Transactional
 	public static Result editShopOrder(int id) {
-		return ok(createEditShopOrder
-				.render(JPA.em().find(ShopOrder.class, id)));
+		return ok(createEditShopOrder.render(session("username"), JPA.em()
+				.find(ShopOrder.class, id)));
 	}
 
 	@Transactional
@@ -61,6 +64,9 @@ public class ShopOrderController extends Controller {
 
 		ShopOrder shopOrder = new ShopOrder(name, categories);
 		JPA.em().persist(shopOrder);
+		User user = JPA.em().find(User.class, session("username"));
+		user.addShopOrder(shopOrder);
+		JPA.em().merge(user);
 
 		flash("success", "Neue ShopOrder erfolgreich erstellt!");
 		return redirect(controllers.routes.ShopOrderController.viewShopOrders());
@@ -78,7 +84,6 @@ public class ShopOrderController extends Controller {
 		ArrayList<Integer> categories = new ArrayList<Integer>();
 		int i = 0;
 		for (String ord : orderArray) {
-			System.out.println(ord);
 			categories.add(Integer.parseInt(ord));
 		}
 
@@ -94,7 +99,11 @@ public class ShopOrderController extends Controller {
 
 	@Transactional
 	public static Result deleteShopOrder(int id) {
-		JPA.em().remove(JPA.em().find(ShopOrder.class, id));
+		ShopOrder shopOrder = JPA.em().find(ShopOrder.class, id);
+		User user = JPA.em().find(User.class, session("username"));
+		user.getShopOrders().remove(shopOrder);
+		JPA.em().merge(user);
+		JPA.em().remove(shopOrder);
 		flash("success", "ShopOrder erfolgreich gelöscht!");
 		return redirect(controllers.routes.ShopOrderController.viewShopOrders());
 	}

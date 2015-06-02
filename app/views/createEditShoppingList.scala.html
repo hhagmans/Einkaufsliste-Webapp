@@ -1,4 +1,4 @@
-@(shoppingList : ShoppingList)(shopOrders : List[ShopOrder])
+@(username: String)(shoppingList : ShoppingList)(shopOrders : List[ShopOrder])
 
 @selectOptions(article : Article) = {
 <option value="0" @if(article != null && article.getCategory().equals(Category.FLEISCHFISCH)) {selected}>Fleisch und Fisch</option>
@@ -12,7 +12,7 @@
 <option value="8" @if(article != null && article.getCategory().equals(Category.SONSTIGES)) {selected}>Sonstiges</option>
 }
 
-@main {
+@main(username) {
   <div class="row">
     <div class="page-header">
       <h1>@if(shoppingList == null) {Neue Einkaufsliste} else {Einkaufsliste <small>@shoppingList.getDate().format("dd.MM.yyyy")</small>}</h1>

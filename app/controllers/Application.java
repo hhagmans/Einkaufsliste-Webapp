@@ -24,6 +24,7 @@ import play.db.jpa.Transactional;
 import play.libs.Json;
 import play.mvc.Controller;
 import play.mvc.Result;
+import play.mvc.Security;
 import views.html.createEditShoppingList;
 import views.html.index;
 import views.html.viewShoppingList;
@@ -32,6 +33,7 @@ import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 
+@Security.Authenticated(LoginSecured.class)
 public class Application extends Controller {
 
 	/**
@@ -98,22 +100,21 @@ public class Application extends Controller {
 
 	@Transactional
 	public static Result index() {
-		return ok(index.render(ShoppingList.getCurrentShoppingLists()));
+		return ok(index.render(session("username"),
+				ShoppingList.getCurrentShoppingLists(session("username"))));
 	}
 
 	@Transactional
 	public static Result viewShoppingList(int id) {
-		return ok(viewShoppingList
-				.render(JPA.em().find(ShoppingList.class, id)));
+		return ok(viewShoppingList.render(session("username"),
+				JPA.em().find(ShoppingList.class, id)));
 	}
 
 	@Transactional
 	public static Result createShoppingList() {
-		return ok(createEditShoppingList.render(
-				null,
-				JPA.em()
-						.createQuery("Select s from ShopOrder s",
-								ShopOrder.class).getResultList()));
+		return ok(createEditShoppingList.render(session("username"), null, JPA
+				.em().createQuery("Select s from ShopOrder s", ShopOrder.class)
+				.getResultList()));
 	}
 
 	@Transactional
@@ -125,6 +126,7 @@ public class Application extends Controller {
 		} catch (ParseException e) {
 			flash("error", "Datum nicht im richtigen Format");
 			return ok(createEditShoppingList.render(
+					session("username"),
 					null,
 					JPA.em()
 							.createQuery("Select s from ShopOrder s",
@@ -133,6 +135,7 @@ public class Application extends Controller {
 		if (isDateInPast(date)) {
 			flash("error", "Das gewählte Datum ist in der Vergangenheit");
 			return ok(createEditShoppingList.render(
+					session("username"),
 					null,
 					JPA.em()
 							.createQuery("Select s from ShopOrder s",
@@ -141,6 +144,7 @@ public class Application extends Controller {
 			flash("error",
 					"Es existiert bereits eine Einkaufsliste an diesem Tag");
 			return ok(createEditShoppingList.render(
+					session("username"),
 					null,
 					JPA.em()
 							.createQuery("Select s from ShopOrder s",
@@ -172,12 +176,14 @@ public class Application extends Controller {
 		if (date == null) {
 			flash("error", "Datum nicht im richtigen Format");
 			return ok(createEditShoppingList.render(
+					session("username"),
 					null,
 					JPA.em()
 							.createQuery("Select s from ShopOrder s",
 									ShopOrder.class).getResultList()));
 		} else {
-			ShoppingList list = ShoppingList.createhoppingList(date);
+			ShoppingList list = ShoppingList.createhoppingList(date,
+					session("username"));
 			JPA.em().persist(list);
 			list.setArticles(articles);
 			if (shopOrder != null) {
@@ -194,6 +200,7 @@ public class Application extends Controller {
 	@Transactional
 	public static Result editShoppingList(int id) {
 		return ok(createEditShoppingList.render(
+				session("username"),
 				JPA.em().find(ShoppingList.class, id),
 				JPA.em()
 						.createQuery("Select s from ShopOrder s",
@@ -210,6 +217,7 @@ public class Application extends Controller {
 		} catch (ParseException e) {
 			flash("error", "Datum nicht im richtigen Format");
 			return ok(createEditShoppingList.render(
+					session("username"),
 					list,
 					JPA.em()
 							.createQuery("Select s from ShopOrder s",
@@ -218,6 +226,7 @@ public class Application extends Controller {
 		if (isDateInPast(date)) {
 			flash("error", "Das gewählte Datum ist in der Vergangenheit");
 			return ok(createEditShoppingList.render(
+					session("username"),
 					list,
 					JPA.em()
 							.createQuery("Select s from ShopOrder s",
@@ -227,6 +236,7 @@ public class Application extends Controller {
 			flash("error",
 					"Es existiert bereits eine Einkaufsliste an diesem Tag");
 			return ok(createEditShoppingList.render(
+					session("username"),
 					list,
 					JPA.em()
 							.createQuery("Select s from ShopOrder s",
@@ -269,6 +279,7 @@ public class Application extends Controller {
 		if (date == null) {
 			flash("error", "Datum nicht im richtigen Format");
 			return ok(createEditShoppingList.render(
+					session("username"),
 					list,
 					JPA.em()
 							.createQuery("Select s from ShopOrder s",
@@ -291,11 +302,13 @@ public class Application extends Controller {
 	}
 
 	public static void sendMessageToAndroid(String message) {
-		String apiKey = "AIzaSyCDRNP43pRO-4yRra-cn4IWeN68BruKlRk";
+		String apiKey = "AIzaSyAQp3JsPuqziuRQvl-XvNzG7L52oBUvtPk";
 		Sender sender = new Sender(apiKey);
 		ListenableFuture<org.whispersystems.gcm.server.Result> future = sender
-				.send(Message.newBuilder()
-						.withDestination(User.createUser("test").getRegId())
+				.send(Message
+						.newBuilder()
+						.withDestination(
+								User.createUser("test", "test").getRegId())
 						.withDataPart("message", message).build());
 
 		Futures.addCallback(future,
@@ -319,7 +332,11 @@ public class Application extends Controller {
 
 	@Transactional
 	public static Result deleteShoppingList(int id) {
-		JPA.em().remove(JPA.em().find(ShoppingList.class, id));
+		ShoppingList list = JPA.em().find(ShoppingList.class, id);
+		User user = JPA.em().find(User.class, session("username"));
+		user.getShopOrders().remove(list);
+		JPA.em().merge(user);
+		JPA.em().remove(list);
 		flash("success", "Einkaufsliste erfolgreich gelöscht!");
 		return redirect(controllers.routes.Application.index());
 	}
@@ -357,21 +374,4 @@ public class Application extends Controller {
 		return redirect(controllers.routes.Application.index());
 	}
 
-	@Transactional
-	public static Result setRegId(String name, String regId) {
-		User user = User.createUser(name);
-		user.setRegId(regId);
-		JPA.em().merge(user);
-		return redirect(controllers.routes.Application.index());
-	}
-
-	@Transactional
-	public static Result getRegId(String name) {
-		User user = User.createUser(name);
-		if (user.getRegId() != null) {
-			return ok(user.getRegId());
-		} else {
-			return notFound();
-		}
-	}
 }

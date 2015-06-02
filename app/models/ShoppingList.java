@@ -49,12 +49,12 @@ public class ShoppingList {
 		this.shopOrder = shopOrder;
 	}
 
-	public static List<ShoppingList> getCurrentShoppingLists() {
+	public static List<ShoppingList> getCurrentShoppingLists(String username) {
+		User user = JPA.em().find(User.class, username);
+
 		List<ShoppingList> currentLists = new ArrayList<ShoppingList>();
-		List<ShoppingList> lists = JPA
-				.em()
-				.createQuery("Select s from ShoppingList s", ShoppingList.class)
-				.getResultList();
+		List<ShoppingList> lists = user.getShoppingLists();
+
 		for (ShoppingList list : lists) {
 			Calendar calList = Calendar.getInstance();
 			Calendar cal = Calendar.getInstance();
@@ -72,11 +72,11 @@ public class ShoppingList {
 		return currentLists;
 	}
 
-	public static ShoppingList getCurrentShoppingList() {
-		List<ShoppingList> lists = JPA
-				.em()
-				.createQuery("Select s from ShoppingList s", ShoppingList.class)
-				.getResultList();
+	public static ShoppingList getCurrentShoppingList(String username) {
+		User user = JPA.em().find(User.class, username);
+
+		List<ShoppingList> lists = user.getShoppingLists();
+
 		for (ShoppingList list : lists) {
 			Calendar calList = Calendar.getInstance();
 			Calendar cal = Calendar.getInstance();
@@ -92,10 +92,13 @@ public class ShoppingList {
 		return null;
 	}
 
-	public static ShoppingList createhoppingList(Date date) {
+	public static ShoppingList createhoppingList(Date date, String username) {
+		User user = JPA.em().find(User.class, username);
 		if (!shoppingListExistsAtDate(date)) {
 			ShoppingList list = new ShoppingList(date);
 			JPA.em().persist(list);
+			user.addShoppingList(list);
+			JPA.em().merge(user);
 			return list;
 		}
 		return null;
