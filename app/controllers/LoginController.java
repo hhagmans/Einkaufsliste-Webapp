@@ -5,6 +5,7 @@ import models.User;
 import play.data.DynamicForm;
 import play.db.jpa.JPA;
 import play.db.jpa.Transactional;
+import play.libs.Json;
 import play.mvc.Controller;
 import play.mvc.Result;
 import views.html.login;
@@ -83,4 +84,15 @@ public class LoginController extends Controller {
 			return unauthorized();
 		}
 	}
+
+	@Transactional
+	public static Result checkLogin(String name, String password) {
+		User user = User.findUser(name, User.decryptPassword(password));
+		if (user != null) {
+			return ok(Json.toJson(true));
+		} else {
+			return unauthorized();
+		}
+	}
+
 }

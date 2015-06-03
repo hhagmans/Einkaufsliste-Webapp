@@ -172,52 +172,56 @@ public class User {
 	public static String decryptPassword(String password) {
 		DESKeySpec dk;
 		SecretKey secretKey = null;
-		try {
-			dk = new DESKeySpec(new Long(7490854493772951678L).toString()
-					.getBytes());
-			SecretKeyFactory kf = SecretKeyFactory.getInstance("DES");
-			secretKey = kf.generateSecret(dk);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		Cipher c;
+		if (password.length() == 16) {
+			try {
+				dk = new DESKeySpec(new Long(7490854493772951678L).toString()
+						.getBytes());
+				SecretKeyFactory kf = SecretKeyFactory.getInstance("DES");
+				secretKey = kf.generateSecret(dk);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			Cipher c;
 
-		try {
-			byte[] tmp = new byte[password.length() / 2];
-			int index = 0;
-			while (index < password.length()) {
-				// convert hexadecimal number into decimal number.
-				int num = Integer.parseInt(
-						password.substring(index, index + 2), 16);
+			try {
+				byte[] tmp = new byte[password.length() / 2];
+				int index = 0;
+				while (index < password.length()) {
+					// convert hexadecimal number into decimal number.
+					int num = Integer.parseInt(
+							password.substring(index, index + 2), 16);
 
-				// convert into signed byte.
-				if (num < 128) {
-					tmp[index / 2] = new Byte(Integer.toString(num))
-							.byteValue();
-				} else {
-					tmp[index / 2] = new Byte(
-							Integer.toString(((num ^ 255) + 1) * -1))
-							.byteValue();
+					// convert into signed byte.
+					if (num < 128) {
+						tmp[index / 2] = new Byte(Integer.toString(num))
+								.byteValue();
+					} else {
+						tmp[index / 2] = new Byte(
+								Integer.toString(((num ^ 255) + 1) * -1))
+								.byteValue();
+					}
+					index += 2;
 				}
-				index += 2;
+
+				c = Cipher.getInstance("DES/ECB/PKCS5Padding");
+				c.init(Cipher.DECRYPT_MODE, secretKey);
+				return new String(c.doFinal(tmp));
+			} catch (InvalidKeyException e) {
+				e.printStackTrace();
+			} catch (IllegalBlockSizeException e) {
+				e.printStackTrace();
+			} catch (NoSuchAlgorithmException e) {
+				e.printStackTrace();
+			} catch (NoSuchPaddingException e) {
+				e.printStackTrace();
+			} catch (BadPaddingException e) {
+				e.printStackTrace();
 			}
 
-			c = Cipher.getInstance("DES/ECB/PKCS5Padding");
-			c.init(Cipher.DECRYPT_MODE, secretKey);
-			return new String(c.doFinal(tmp));
-		} catch (InvalidKeyException e) {
-			e.printStackTrace();
-		} catch (IllegalBlockSizeException e) {
-			e.printStackTrace();
-		} catch (NoSuchAlgorithmException e) {
-			e.printStackTrace();
-		} catch (NoSuchPaddingException e) {
-			e.printStackTrace();
-		} catch (BadPaddingException e) {
-			e.printStackTrace();
+			return "";
+		} else {
+			return "";
 		}
-
-		return "";
 	}
 
 	public static User createUser(String name, String password) {
