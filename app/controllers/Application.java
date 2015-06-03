@@ -113,8 +113,7 @@ public class Application extends Controller {
 	@Transactional
 	public static Result createShoppingList() {
 		return ok(createEditShoppingList.render(session("username"), null, JPA
-				.em().createQuery("Select s from ShopOrder s", ShopOrder.class)
-				.getResultList()));
+				.em().find(User.class, session("username")).getShopOrders()));
 	}
 
 	@Transactional
@@ -125,30 +124,21 @@ public class Application extends Controller {
 			date = getDateFromForm(bindedForm.get("date"));
 		} catch (ParseException e) {
 			flash("error", "Datum nicht im richtigen Format");
-			return ok(createEditShoppingList.render(
-					session("username"),
-					null,
-					JPA.em()
-							.createQuery("Select s from ShopOrder s",
-									ShopOrder.class).getResultList()));
+			return ok(createEditShoppingList.render(session("username"), null,
+					JPA.em().find(User.class, session("username"))
+							.getShopOrders()));
 		}
 		if (isDateInPast(date)) {
 			flash("error", "Das gewählte Datum ist in der Vergangenheit");
-			return ok(createEditShoppingList.render(
-					session("username"),
-					null,
-					JPA.em()
-							.createQuery("Select s from ShopOrder s",
-									ShopOrder.class).getResultList()));
+			return ok(createEditShoppingList.render(session("username"), null,
+					JPA.em().find(User.class, session("username"))
+							.getShopOrders()));
 		} else if (ShoppingList.shoppingListExistsAtDate(date)) {
 			flash("error",
 					"Es existiert bereits eine Einkaufsliste an diesem Tag");
-			return ok(createEditShoppingList.render(
-					session("username"),
-					null,
-					JPA.em()
-							.createQuery("Select s from ShopOrder s",
-									ShopOrder.class).getResultList()));
+			return ok(createEditShoppingList.render(session("username"), null,
+					JPA.em().find(User.class, session("username"))
+							.getShopOrders()));
 		}
 
 		ShopOrder shopOrder = JPA.em().find(ShopOrder.class,
@@ -175,12 +165,9 @@ public class Application extends Controller {
 
 		if (date == null) {
 			flash("error", "Datum nicht im richtigen Format");
-			return ok(createEditShoppingList.render(
-					session("username"),
-					null,
-					JPA.em()
-							.createQuery("Select s from ShopOrder s",
-									ShopOrder.class).getResultList()));
+			return ok(createEditShoppingList.render(session("username"), null,
+					JPA.em().find(User.class, session("username"))
+							.getShopOrders()));
 		} else {
 			ShoppingList list = ShoppingList.createhoppingList(date,
 					session("username"));
@@ -199,12 +186,9 @@ public class Application extends Controller {
 
 	@Transactional
 	public static Result editShoppingList(int id) {
-		return ok(createEditShoppingList.render(
-				session("username"),
-				JPA.em().find(ShoppingList.class, id),
-				JPA.em()
-						.createQuery("Select s from ShopOrder s",
-								ShopOrder.class).getResultList()));
+		return ok(createEditShoppingList.render(session("username"), JPA.em()
+				.find(ShoppingList.class, id),
+				JPA.em().find(User.class, session("username")).getShopOrders()));
 	}
 
 	@Transactional
@@ -216,31 +200,22 @@ public class Application extends Controller {
 			date = getDateFromForm(bindedForm.get("date"));
 		} catch (ParseException e) {
 			flash("error", "Datum nicht im richtigen Format");
-			return ok(createEditShoppingList.render(
-					session("username"),
-					list,
-					JPA.em()
-							.createQuery("Select s from ShopOrder s",
-									ShopOrder.class).getResultList()));
+			return ok(createEditShoppingList.render(session("username"), list,
+					JPA.em().find(User.class, session("username"))
+							.getShopOrders()));
 		}
 		if (isDateInPast(date)) {
 			flash("error", "Das gewählte Datum ist in der Vergangenheit");
-			return ok(createEditShoppingList.render(
-					session("username"),
-					list,
-					JPA.em()
-							.createQuery("Select s from ShopOrder s",
-									ShopOrder.class).getResultList()));
+			return ok(createEditShoppingList.render(session("username"), list,
+					JPA.em().find(User.class, session("username"))
+							.getShopOrders()));
 		} else if (!list.getDate().equals(date)
 				&& ShoppingList.shoppingListExistsAtDate(date)) {
 			flash("error",
 					"Es existiert bereits eine Einkaufsliste an diesem Tag");
-			return ok(createEditShoppingList.render(
-					session("username"),
-					list,
-					JPA.em()
-							.createQuery("Select s from ShopOrder s",
-									ShopOrder.class).getResultList()));
+			return ok(createEditShoppingList.render(session("username"), list,
+					JPA.em().find(User.class, session("username"))
+							.getShopOrders()));
 		}
 
 		ShopOrder shopOrder = JPA.em().find(ShopOrder.class,
@@ -278,12 +253,9 @@ public class Application extends Controller {
 
 		if (date == null) {
 			flash("error", "Datum nicht im richtigen Format");
-			return ok(createEditShoppingList.render(
-					session("username"),
-					list,
-					JPA.em()
-							.createQuery("Select s from ShopOrder s",
-									ShopOrder.class).getResultList()));
+			return ok(createEditShoppingList.render(session("username"), list,
+					JPA.em().find(User.class, session("username"))
+							.getShopOrders()));
 		} else {
 			list.setDate(date);
 			list.addArticles(articles);
@@ -302,32 +274,34 @@ public class Application extends Controller {
 	}
 
 	public static void sendMessageToAndroid(String message) {
-		String apiKey = "AIzaSyAQp3JsPuqziuRQvl-XvNzG7L52oBUvtPk";
-		Sender sender = new Sender(apiKey);
-		ListenableFuture<org.whispersystems.gcm.server.Result> future = sender
-				.send(Message
-						.newBuilder()
-						.withDestination(
-								User.createUser("test", "test").getRegId())
-						.withDataPart("message", message).build());
+		if (JPA.em().find(User.class, session("username")).getRegId() != null) {
+			String apiKey = "AIzaSyAQp3JsPuqziuRQvl-XvNzG7L52oBUvtPk";
+			Sender sender = new Sender(apiKey);
+			ListenableFuture<org.whispersystems.gcm.server.Result> future = sender
+					.send(Message
+							.newBuilder()
+							.withDestination(
+									User.createUser("test", "test").getRegId())
+							.withDataPart("message", message).build());
 
-		Futures.addCallback(future,
-				new FutureCallback<org.whispersystems.gcm.server.Result>() {
-					@Override
-					public void onSuccess(
-							org.whispersystems.gcm.server.Result result) {
-						if (result.isSuccess()) {
-							System.out.println(result.getMessageId());
-						} else {
-							System.out.println(result.getError());
+			Futures.addCallback(future,
+					new FutureCallback<org.whispersystems.gcm.server.Result>() {
+						@Override
+						public void onSuccess(
+								org.whispersystems.gcm.server.Result result) {
+							if (result.isSuccess()) {
+								System.out.println(result.getMessageId());
+							} else {
+								System.out.println(result.getError());
+							}
 						}
-					}
 
-					@Override
-					public void onFailure(Throwable throwable) {
-						System.out.println("FAIL");
-					}
-				});
+						@Override
+						public void onFailure(Throwable throwable) {
+							System.out.println("FAIL");
+						}
+					});
+		}
 	}
 
 	@Transactional
