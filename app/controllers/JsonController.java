@@ -42,4 +42,26 @@ public class JsonController extends Controller {
 			return unauthorized();
 		}
 	}
+
+	@Transactional
+	public static Result checkArticle(int id, String name, String password) {
+		User user = User.findUser(name, User.decryptPassword(password));
+		Article article = JPA.em().find(Article.class, id);
+		if (article != null && user != null) {
+			article.checkArticle();
+			JPA.em().merge(article);
+		}
+		return redirect(controllers.routes.Application.index());
+	}
+
+	@Transactional
+	public static Result uncheckArticle(int id, String name, String password) {
+		User user = User.findUser(name, User.decryptPassword(password));
+		Article article = JPA.em().find(Article.class, id);
+		if (article != null && user != null) {
+			article.uncheckArticle();
+			JPA.em().merge(article);
+		}
+		return redirect(controllers.routes.Application.index());
+	}
 }
