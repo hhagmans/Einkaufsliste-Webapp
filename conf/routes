@@ -42,10 +42,10 @@ GET     /shoppingList&id=:id/delete                           controllers.Applic
 GET     /shoppingList&id=:id&articleId=:articleId/deleteArticle                           controllers.Application.deleteArticle(id: Int, articleId: Int)
 
 # Check Article
-GET     /article&id=:id/check&username=:username&password=:password					                        controllers.Application.checkArticle(id: Int, username: String, password: String)
+GET     /article&id=:id/check&username=:username&password=:password					                        controllers.JsonController.checkArticle(id: Int, username: String, password: String)
 
 # Uncheck Article
-GET     /article&id=:id/uncheck&username=:username&password=:password					                        controllers.Application.uncheckArticle(id: Int, username: String, password: String)
+GET     /article&id=:id/uncheck&username=:username&password=:password					                        controllers.JsonController.uncheckArticle(id: Int, username: String, password: String)
 
 # Get Article as Json
 GET     /article&id=:id/json&username=:username&password=:password				                        controllers.JsonController.getArticleAsJson(id: Int, username: String, password: String)
