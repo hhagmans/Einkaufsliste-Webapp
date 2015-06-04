@@ -274,14 +274,12 @@ public class Application extends Controller {
 	}
 
 	public static void sendMessageToAndroid(String message) {
-		if (JPA.em().find(User.class, session("username")).getRegId() != null) {
-			String apiKey = "AIzaSyAQp3JsPuqziuRQvl-XvNzG7L52oBUvtPk";
+		User user = JPA.em().find(User.class, session("username"));
+		if (user.getRegId() != null) {
+			String apiKey = "AIzaSyCDRNP43pRO-4yRra-cn4IWeN68BruKlRk";
 			Sender sender = new Sender(apiKey);
 			ListenableFuture<org.whispersystems.gcm.server.Result> future = sender
-					.send(Message
-							.newBuilder()
-							.withDestination(
-									User.createUser("test", "test").getRegId())
+					.send(Message.newBuilder().withDestination(user.getRegId())
 							.withDataPart("message", message).build());
 
 			Futures.addCallback(future,
@@ -326,26 +324,6 @@ public class Application extends Controller {
 		flash("success", "Artikel erfolgreich gelöscht!");
 		return redirect(controllers.routes.Application.editShoppingList(list
 				.getId()));
-	}
-
-	@Transactional
-	public static Result checkArticle(int id) {
-		Article article = JPA.em().find(Article.class, id);
-		if (article != null) {
-			article.checkArticle();
-			JPA.em().merge(article);
-		}
-		return redirect(controllers.routes.Application.index());
-	}
-
-	@Transactional
-	public static Result uncheckArticle(int id) {
-		Article article = JPA.em().find(Article.class, id);
-		if (article != null) {
-			article.uncheckArticle();
-			JPA.em().merge(article);
-		}
-		return redirect(controllers.routes.Application.index());
 	}
 
 }
