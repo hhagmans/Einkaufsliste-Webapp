@@ -2,6 +2,7 @@ package controllers;
 
 import static play.data.Form.form;
 
+import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -14,10 +15,6 @@ import models.Category;
 import models.ShopOrder;
 import models.ShoppingList;
 import models.User;
-
-import org.whispersystems.gcm.server.Message;
-import org.whispersystems.gcm.server.Sender;
-
 import play.data.DynamicForm;
 import play.db.jpa.JPA;
 import play.db.jpa.Transactional;
@@ -29,9 +26,8 @@ import views.html.createEditShoppingList;
 import views.html.index;
 import views.html.viewShoppingList;
 
-import com.google.common.util.concurrent.FutureCallback;
-import com.google.common.util.concurrent.Futures;
-import com.google.common.util.concurrent.ListenableFuture;
+import com.google.android.gcm.server.Message;
+import com.google.android.gcm.server.Sender;
 
 @Security.Authenticated(LoginSecured.class)
 public class Application extends Controller {
@@ -277,28 +273,18 @@ public class Application extends Controller {
 		User user = JPA.em().find(User.class, session("username"));
 		if (user.getRegId() != null) {
 			String apiKey = "AIzaSyCDRNP43pRO-4yRra-cn4IWeN68BruKlRk";
+
 			Sender sender = new Sender(apiKey);
-			ListenableFuture<org.whispersystems.gcm.server.Result> future = sender
-					.send(Message.newBuilder().withDestination(user.getRegId())
-							.withDataPart("message", message).build());
-
-			Futures.addCallback(future,
-					new FutureCallback<org.whispersystems.gcm.server.Result>() {
-						@Override
-						public void onSuccess(
-								org.whispersystems.gcm.server.Result result) {
-							if (result.isSuccess()) {
-								System.out.println(result.getMessageId());
-							} else {
-								System.out.println(result.getError());
-							}
-						}
-
-						@Override
-						public void onFailure(Throwable throwable) {
-							System.out.println("FAIL");
-						}
-					});
+			Message gcmMessage = new Message.Builder().addData("message",
+					message).build();
+			try {
+				com.google.android.gcm.server.Result result = sender.send(
+						gcmMessage, user.getRegId(), 0);
+				System.out.println(result.getErrorCodeName());
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 	}
 

@@ -12,5 +12,5 @@ libraryDependencies ++= Seq(
   "org.hibernate" % "hibernate-entitymanager" % "3.6.10.Final",
   javaWs,
   "postgresql" % "postgresql" % "9.1-901-1.jdbc4",
-  "org.whispersystems" % "gcm-sender-async" % "0.1.3"  
+  "com.ganyo" % "gcm-server" % "1.0.2"
 )
