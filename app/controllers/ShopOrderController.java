@@ -79,6 +79,12 @@ public class ShopOrderController extends Controller {
 		DynamicForm bindedForm = form().bindFromRequest();
 
 		String name = bindedForm.get("name");
+
+		if (name == "") {
+			flash("error", "Kein Name angegeben!");
+			return ok(createEditShopOrder.render(session("username"), null));
+		}
+
 		String order = bindedForm.get("order");
 		ArrayList<Integer> categories = new ArrayList<Integer>();
 		if (order != "") { // Prüfen ob es Änderungen gibt
@@ -116,6 +122,13 @@ public class ShopOrderController extends Controller {
 		DynamicForm bindedForm = form().bindFromRequest();
 
 		String name = bindedForm.get("name");
+
+		if (name == "") {
+			flash("error", "Kein Name angegeben!");
+			return ok(createEditShopOrder.render(session("username"), JPA.em()
+					.find(ShopOrder.class, id)));
+		}
+
 		String order = bindedForm.get("order");
 		if (order != "") { // Prüfen ob Änderungen gemacht wurden
 			List<String> orderArray = Arrays.asList(order.split("\\s*,\\s*"));

@@ -11,7 +11,8 @@ public enum Category {
 	FLEISCHFISCH("Fleisch und Fisch"), GEMUESEOBST("Gemüse und Obst"), KOCHENBACKEN(
 			"Kochen und Backen"), MILCHPRODUKTE("Milchprodukte"), TIEFKUEHLPRODUKTE(
 			"Tiefkühlprodukte"), GETRAENKE("Getränke"), SUESSIGKEITEN(
-			"Süßigkeiten"), HAUSHALT("Haushalt"), SONSTIGES("Sonstiges");
+			"Süßigkeiten"), KOERPERPFLEGE("Körperpflege"), HAUSHALT("Haushalt"), SONSTIGES(
+			"Sonstiges");
 
 	private String categoryName;
 
@@ -42,8 +43,8 @@ public enum Category {
 		Category categories[] = new Category[] { Category.FLEISCHFISCH,
 				Category.GEMUESEOBST, Category.KOCHENBACKEN,
 				Category.MILCHPRODUKTE, Category.TIEFKUEHLPRODUKTE,
-				Category.GETRAENKE, Category.SUESSIGKEITEN, Category.HAUSHALT,
-				Category.SONSTIGES };
+				Category.GETRAENKE, Category.SUESSIGKEITEN,
+				Category.KOERPERPFLEGE, Category.HAUSHALT, Category.SONSTIGES };
 		return categories[index];
 	}
 }

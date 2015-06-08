@@ -21,7 +21,7 @@ import javax.persistence.TemporalType;
 import play.db.jpa.JPA;
 
 /**
- * Stellt eine SHoppingList mit Artikeln dar
+ * Stellt eine ShoppingList mit Artikeln dar
  * 
  * @author Hendrik Hagmans
  * 
@@ -218,6 +218,7 @@ public class ShoppingList {
 			ArrayList<Article> tiefkuhlArticles = new ArrayList<Article>();
 			ArrayList<Article> getraenkeArticles = new ArrayList<Article>();
 			ArrayList<Article> sussArticles = new ArrayList<Article>();
+			ArrayList<Article> korperArticles = new ArrayList<Article>();
 			ArrayList<Article> haushaltArticles = new ArrayList<Article>();
 			ArrayList<Article> sonstigesArticles = new ArrayList<Article>();
 
@@ -237,6 +238,8 @@ public class ShoppingList {
 					getraenkeArticles.add(article);
 				} else if (article.getCategory().equals(Category.SUESSIGKEITEN)) {
 					sussArticles.add(article);
+				} else if (article.getCategory().equals(Category.KOERPERPFLEGE)) {
+					korperArticles.add(article);
 				} else if (article.getCategory().equals(Category.HAUSHALT)) {
 					haushaltArticles.add(article);
 				} else if (article.getCategory().equals(Category.SONSTIGES)) {
@@ -260,6 +263,8 @@ public class ShoppingList {
 					articles.addAll(getraenkeArticles);
 				} else if (category.equals(Category.SUESSIGKEITEN)) {
 					articles.addAll(sussArticles);
+				} else if (category.equals(Category.KOERPERPFLEGE)) {
+					articles.addAll(korperArticles);
 				} else if (category.equals(Category.HAUSHALT)) {
 					articles.addAll(haushaltArticles);
 				} else if (category.equals(Category.SONSTIGES)) {

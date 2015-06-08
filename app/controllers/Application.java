@@ -108,8 +108,10 @@ public class Application extends Controller {
 		} else if (trim.contains("6")) {
 			category = Category.SUESSIGKEITEN;
 		} else if (trim.contains("7")) {
-			category = Category.HAUSHALT;
+			category = Category.KOERPERPFLEGE;
 		} else if (trim.contains("8")) {
+			category = Category.HAUSHALT;
+		} else if (trim.contains("9")) {
 			category = Category.SONSTIGES;
 		}
 		return category;

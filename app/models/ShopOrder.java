@@ -66,7 +66,7 @@ public class ShopOrder {
 	}
 
 	public Category[] getCategoriesAsCategory() {
-		Category[] categories = new Category[9];
+		Category[] categories = new Category[10];
 		for (int i = 0; i < this.categories.size(); i++) {
 			categories[i] = Category.getCategoryByIndex(this.categories.get(i));
 		}
