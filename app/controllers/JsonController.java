@@ -9,8 +9,22 @@ import play.libs.Json;
 import play.mvc.Controller;
 import play.mvc.Result;
 
+/**
+ * Enthält alle Funktionen zur Json Schnittstelle
+ * 
+ * @author Hendrik Hagmans
+ * 
+ */
 public class JsonController extends Controller {
 
+	/**
+	 * Prüft die Credentials und returned den {@link Article} als Json
+	 * 
+	 * @param id
+	 * @param name
+	 * @param password
+	 * @return Artikel als Json
+	 */
 	@Transactional
 	public static Result getArticleAsJson(int id, String name, String password) {
 		User user = User.findUser(name, User.decryptPassword(password));
@@ -26,6 +40,14 @@ public class JsonController extends Controller {
 		}
 	}
 
+	/**
+	 * Prüft die Credentials und returned die aktuelle {@link ShoppingList} als
+	 * Json
+	 * 
+	 * @param name
+	 * @param password
+	 * @return
+	 */
 	@Transactional
 	public static Result getCurrentShoppingListAsJson(String name,
 			String password) {
@@ -43,6 +65,14 @@ public class JsonController extends Controller {
 		}
 	}
 
+	/**
+	 * Prüft die Credentials und checked den {@link Article}
+	 * 
+	 * @param id
+	 * @param name
+	 * @param password
+	 * @return
+	 */
 	@Transactional
 	public static Result checkArticle(int id, String name, String password) {
 		User user = User.findUser(name, User.decryptPassword(password));
@@ -54,6 +84,14 @@ public class JsonController extends Controller {
 		return redirect(controllers.routes.Application.index());
 	}
 
+	/**
+	 * Prüft die Credentials und unchecked den {@link Article}
+	 * 
+	 * @param id
+	 * @param name
+	 * @param password
+	 * @return
+	 */
 	@Transactional
 	public static Result uncheckArticle(int id, String name, String password) {
 		User user = User.findUser(name, User.decryptPassword(password));

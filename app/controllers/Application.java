@@ -31,6 +31,12 @@ import views.html.viewShoppingList;
 import com.google.android.gcm.server.Message;
 import com.google.android.gcm.server.Sender;
 
+/**
+ * Enthält alle Funktionen zu ShoppingLists
+ * 
+ * @author Hendrik Hagmans
+ * 
+ */
 @Security.Authenticated(LoginSecured.class)
 public class Application extends Controller {
 
@@ -49,29 +55,42 @@ public class Application extends Controller {
 		} else {
 			if (!formValue.matches("\\d{2}.\\d{2}.\\d{4}")) {
 				throw new ParseException(
-						" Startdate does not match the correct regex.", 370);
+						" Date does not match the correct regex.", 370);
 			}
 			date = new SimpleDateFormat("dd.MM.yyyy").parse(formValue);
 		}
 		return date;
 	}
 
+	/**
+	 * Prüft ob übergebenes Datum in der Vergangenheit liegt
+	 * 
+	 * @param date
+	 * @return
+	 */
 	public static boolean isDateInPast(Date date) {
 		Calendar calCurrent = Calendar.getInstance();
 		Calendar cal = Calendar.getInstance();
 		calCurrent.setTime(new Date());
 		cal.setTime(date);
 		if (calCurrent.get(Calendar.YEAR) > cal.get(Calendar.YEAR)) {
-			return true;
+			return true; // In vergangenem Jahr
 		} else if (calCurrent.get(Calendar.YEAR) == cal.get(Calendar.YEAR)) {
 			if (calCurrent.get(Calendar.DAY_OF_YEAR) > cal
 					.get(Calendar.DAY_OF_YEAR)) {
-				return true;
+				return true; // Innerhalb dieses Jahres, aber an einem
+								// vorherigen Tag
 			}
 		}
-		return false;
+		return false; // Nicht in der Vergangenheit
 	}
 
+	/**
+	 * Parst {@link Category} aus einem Formvalue
+	 * 
+	 * @param trim
+	 * @return
+	 */
 	private static Category getCategoryFromForm(String trim) {
 		Category category = null;
 		if (trim.contains("0")) {
@@ -96,24 +115,42 @@ public class Application extends Controller {
 		return category;
 	}
 
+	/**
+	 * 
+	 * @return Index View
+	 */
 	@Transactional
 	public static Result index() {
 		return ok(index.render(session("username"),
 				ShoppingList.getCurrentShoppingLists(session("username"))));
 	}
 
+	/**
+	 * 
+	 * @param id
+	 * @return ShoppingList View
+	 */
 	@Transactional
 	public static Result viewShoppingList(int id) {
 		return ok(viewShoppingList.render(session("username"),
 				JPA.em().find(ShoppingList.class, id)));
 	}
 
+	/**
+	 * 
+	 * @return createShoppingList View
+	 */
 	@Transactional
 	public static Result createShoppingList() {
 		return ok(createEditShoppingList.render(session("username"), null, JPA
 				.em().find(User.class, session("username")).getShopOrders()));
 	}
 
+	/**
+	 * Erstellt eine {@link ShoppingList} aus den übergebenen Formularwerten
+	 * 
+	 * @return Index View
+	 */
 	@Transactional
 	public static Result createShoppingListSave() {
 		DynamicForm bindedForm = form().bindFromRequest();
@@ -144,11 +181,12 @@ public class Application extends Controller {
 
 		int i = 0;
 		List<Article> articles = new ArrayList<Article>();
-		while (true) {
-			if (bindedForm.get("article" + i) == null) {
+		while (true) { // Da die Menge der Artikel unbekannt ist
+			if (bindedForm.get("article" + i) == null) { // Keine weiteren
+															// Artikel mehr
 				break;
 			} else if (bindedForm.get("article" + i) == "") {
-
+				// Artikel ohne Name --> überspringen
 			} else {
 				String name = bindedForm.get("article" + i);
 				Category category = getCategoryFromForm(bindedForm
@@ -169,12 +207,12 @@ public class Application extends Controller {
 		} else {
 			ShoppingList list = ShoppingList.createhoppingList(date,
 					session("username"));
-			if (shopOrderId == 0) {
+			if (shopOrderId == 0) { // --> Eigene Sortierung
 				list.setOwnSorting(true);
 			}
 			JPA.em().persist(list);
 			list.setArticles(articles);
-			if (shopOrder != null) {
+			if (shopOrder != null) { // Null wenn ohne oder eigene Sortierung
 				list.setShopOrder(shopOrder);
 				shopOrder.setShoppingList(list);
 				JPA.em().merge(list);
@@ -185,6 +223,12 @@ public class Application extends Controller {
 		}
 	}
 
+	/**
+	 * 
+	 * @param id
+	 *            der ShoppingList
+	 * @return editShoppingList View
+	 */
 	@Transactional
 	public static Result editShoppingList(int id) {
 		return ok(createEditShoppingList.render(session("username"), JPA.em()
@@ -192,6 +236,13 @@ public class Application extends Controller {
 				JPA.em().find(User.class, session("username")).getShopOrders()));
 	}
 
+	/**
+	 * Aktualisiert die Attribute der {@link Shoppinglist}
+	 * 
+	 * @param id
+	 *            der ShoppingList
+	 * @return Index View
+	 */
 	@Transactional
 	public static Result editShoppingListSave(int id) {
 		ShoppingList list = JPA.em().find(ShoppingList.class, id);
@@ -224,23 +275,27 @@ public class Application extends Controller {
 
 		int i = 0;
 		List<Article> articles = new ArrayList<Article>();
-		while (true) {
-			if (bindedForm.get("article" + i) == null) {
+		while (true) { // Da die Menge der Artikel unbekannt ist
+			if (bindedForm.get("article" + i) == null) { // Keine weiteren
+															// Artikel mehr
 				break;
 			} else if (bindedForm.get("article" + i) == "") {
-
+				// Artikel ohne Name --> überspringen
 			} else {
 				String name = bindedForm.get("article" + i);
 				Category category = getCategoryFromForm(bindedForm
 						.get("category" + i));
 				String articleId = bindedForm.get("articleId" + i);
 				if (articleId == null) {
-					if (!list.containsArticle(name, category)) {
+					if (!list.containsArticle(name, category)) { // Prüfen ob
+																	// Artikel
+																	// schon
+																	// vorhanden
 						Article article = new Article(name, category);
 						JPA.em().persist(article);
 						articles.add(article);
 					}
-				} else {
+				} else { // Artikel schon vorhanden --> aktualisieren
 					Article oldArticle = JPA.em().find(Article.class,
 							Integer.parseInt(articleId));
 					oldArticle.setName(name);
@@ -260,44 +315,73 @@ public class Application extends Controller {
 		} else {
 			list.setDate(date);
 			list.addArticles(articles);
-			if (shopOrderId == 0) {
+			if (shopOrderId == 0) { // --> Eigene Sortierung
 				list.setOwnSorting(true);
 			} else {
 				list.setOwnSorting(false);
 			}
 			JPA.em().merge(list);
-			if (shopOrder != null) {
+			if (shopOrder != null) { // Null wenn eigene Sortierung oder ohne
+										// Sortierung
 				list.setShopOrder(shopOrder);
 				shopOrder.setShoppingList(list);
 				JPA.em().merge(list);
 				JPA.em().merge(shopOrder);
 			}
 
-			sendMessageToAndroid(Json.toJson(list.getArticles()).asText());
+			Calendar calList = Calendar.getInstance();
+			Calendar cal = Calendar.getInstance();
+			calList.setTime(list.getDate());
+			cal.setTime(new Date());
+			if (calList.get(Calendar.YEAR) == cal.get(Calendar.YEAR)
+					&& calList.get(Calendar.DAY_OF_YEAR) == cal
+							.get(Calendar.DAY_OF_YEAR)) {
+				sendMessageToAndroid(Json.toJson(list.getArticles()).asText());
+			}
 			flash("success", "Einkaufsliste erfolgreich bearbeitet!");
 			return redirect(controllers.routes.Application.index());
 		}
 	}
 
+	/**
+	 * Schickt die aktuelle Einkaufsliste an das Android Gerät des angemeldeten
+	 * Nutzers, falls er sich mit diesem schon einmal angemeldet hat
+	 * 
+	 * @param message
+	 *            Json Value der aktuellen Liste
+	 */
 	public static void sendMessageToAndroid(String message) {
 		User user = JPA.em().find(User.class, session("username"));
 		if (user.getRegId() != null) {
-			String apiKey = "AIzaSyCDRNP43pRO-4yRra-cn4IWeN68BruKlRk";
+			String apiKey = "AIzaSyCDRNP43pRO-4yRra-cn4IWeN68BruKlRk"; // Api
+																		// Key
+																		// der
+																		// Anwendung,
+																		// von
+																		// Google
+																		// erstellt
 
 			Sender sender = new Sender(apiKey);
 			Message gcmMessage = new Message.Builder().addData("message",
 					message).build();
 			try {
 				com.google.android.gcm.server.Result result = sender.send(
-						gcmMessage, user.getRegId(), 0);
+						gcmMessage, user.getRegId(), 0); // Senden an RegId des
+															// Users
 				System.out.println(result.getErrorCodeName());
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
 	}
 
+	/**
+	 * Löscht die {@link ShoppingList}
+	 * 
+	 * @param id
+	 *            der zu löschenden ShoppingList
+	 * @return Index View
+	 */
 	@Transactional
 	public static Result deleteShoppingList(int id) {
 		ShoppingList list = JPA.em().find(ShoppingList.class, id);
@@ -309,6 +393,15 @@ public class Application extends Controller {
 		return redirect(controllers.routes.Application.index());
 	}
 
+	/**
+	 * Löscht den {@link Artikel}
+	 * 
+	 * @param listId
+	 *            Id der Liste des Artikels
+	 * @param articleId
+	 *            Id des zu löschenden Artikels
+	 * @return editShoppingList View
+	 */
 	@Transactional
 	public static Result deleteArticle(int listId, int articleId) {
 		Article article = JPA.em().find(Article.class, articleId);
@@ -322,18 +415,31 @@ public class Application extends Controller {
 				.getId()));
 	}
 
+	/**
+	 * 
+	 * @param id
+	 *            der ShoppingList
+	 * @return editSorting View
+	 */
 	@Transactional
 	public static Result editSorting(int id) {
 		return ok(editSorting.render(session("username"),
 				JPA.em().find(ShoppingList.class, id)));
 	}
 
+	/**
+	 * Speichert die Sortierung der {@link ShoppingList}
+	 * 
+	 * @param id
+	 *            der ShoppingList
+	 * @return Index View
+	 */
 	@Transactional
 	public static Result editSortingSave(int id) {
 		DynamicForm bindedForm = form().bindFromRequest();
 
 		String sorting = bindedForm.get("sorting");
-		if (sorting != "") {
+		if (sorting != "") { // Prüfen ob es Änderungen gibt
 			List<String> sortingArray = Arrays.asList(sorting
 					.split("\\s*,\\s*"));
 			ArrayList<Integer> ids = new ArrayList<Integer>();
@@ -345,8 +451,17 @@ public class Application extends Controller {
 			ShoppingList shoppingList = JPA.em().find(ShoppingList.class, id);
 			shoppingList.setSorting(ids);
 			JPA.em().merge(shoppingList);
-			sendMessageToAndroid(Json.toJson(shoppingList.getArticles())
-					.asText());
+
+			Calendar calList = Calendar.getInstance();
+			Calendar cal = Calendar.getInstance();
+			calList.setTime(shoppingList.getDate());
+			cal.setTime(new Date());
+			if (calList.get(Calendar.YEAR) == cal.get(Calendar.YEAR)
+					&& calList.get(Calendar.DAY_OF_YEAR) == cal
+							.get(Calendar.DAY_OF_YEAR)) {
+				sendMessageToAndroid(Json.toJson(shoppingList.getArticles())
+						.asText());
+			}
 		}
 
 		flash("success", "Sortierung erfolgreich aktualisiert!");

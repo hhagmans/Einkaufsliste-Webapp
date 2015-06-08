@@ -7,6 +7,12 @@ import javax.persistence.Id;
 
 import play.db.jpa.JPA;
 
+/**
+ * Stellt einen Einkaufsartikel dar
+ * 
+ * @author Hendrik Hagmans
+ * 
+ */
 @Entity
 public class Article {
 
@@ -15,6 +21,9 @@ public class Article {
 	private int id;
 	private String name;
 	private Category category;
+	/**
+	 * Abgehakt Status des Artikels
+	 */
 	private boolean checked = false;
 
 	public Article() {

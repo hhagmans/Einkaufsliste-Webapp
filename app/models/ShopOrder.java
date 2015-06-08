@@ -11,6 +11,12 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToOne;
 
+/**
+ * Stellt die Sortierung der {@link Category} einer ShoppingList dar
+ * 
+ * @author Hendrik Hagmans
+ * 
+ */
 @Entity
 public class ShopOrder {
 

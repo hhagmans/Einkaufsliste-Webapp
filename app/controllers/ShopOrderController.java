@@ -18,31 +18,62 @@ import views.html.createEditShopOrder;
 import views.html.viewShopOrder;
 import views.html.viewShopOrders;
 
+/**
+ * Enthält alle Funktionen zu ShopOrders
+ * 
+ * @author Hendrik Hagmans
+ * 
+ */
 @Security.Authenticated(LoginSecured.class)
 public class ShopOrderController extends Controller {
 
+	/**
+	 * 
+	 * @return viewShopOrders View
+	 */
 	@Transactional
 	public static Result viewShopOrders() {
 		return ok(viewShopOrders.render(session("username"),
 				JPA.em().find(User.class, session("username")).getShopOrders()));
 	}
 
+	/**
+	 * viewShopOrder View
+	 * 
+	 * @param id
+	 * @return
+	 */
 	@Transactional
 	public static Result viewShopOrder(int id) {
 		return ok(viewShopOrder.render(session("username"),
 				JPA.em().find(ShopOrder.class, id)));
 	}
 
+	/**
+	 * 
+	 * @return createShopOrderView
+	 */
 	public static Result createShopOrder() {
 		return ok(createEditShopOrder.render(session("username"), null));
 	}
 
+	/**
+	 * 
+	 * @param id
+	 *            der ShopOrder
+	 * @return editShopOrder View
+	 */
 	@Transactional
 	public static Result editShopOrder(int id) {
 		return ok(createEditShopOrder.render(session("username"), JPA.em()
 				.find(ShopOrder.class, id)));
 	}
 
+	/**
+	 * Erstellt die {@link ShopOrder} mit den übergebenen Formvalues
+	 * 
+	 * @return viewShopOrders View
+	 */
 	@Transactional
 	public static Result createShopOrderSave() {
 		DynamicForm bindedForm = form().bindFromRequest();
@@ -50,13 +81,15 @@ public class ShopOrderController extends Controller {
 		String name = bindedForm.get("name");
 		String order = bindedForm.get("order");
 		ArrayList<Integer> categories = new ArrayList<Integer>();
-		if (order != "") {
+		if (order != "") { // Prüfen ob es Änderungen gibt
 			List<String> orderArray = Arrays.asList(order.split("\\s*,\\s*"));
 			int i = 0;
 			for (String ord : orderArray) {
 				categories.add(Integer.parseInt(ord));
 			}
-		} else {
+		}
+		// Keine Änderungen gemacht
+		else {
 			for (int i = 0; i < 9; i++) {
 				categories.add(i);
 			}
@@ -73,13 +106,18 @@ public class ShopOrderController extends Controller {
 
 	}
 
+	/**
+	 * Speichert die {@link ShopOrder} mit den übergebenen Formvalues
+	 * 
+	 * @return viewShopOrders View
+	 */
 	@Transactional
 	public static Result editShopOrderSave(int id) {
 		DynamicForm bindedForm = form().bindFromRequest();
 
 		String name = bindedForm.get("name");
 		String order = bindedForm.get("order");
-		if (order != "") {
+		if (order != "") { // Prüfen ob Änderungen gemacht wurden
 			List<String> orderArray = Arrays.asList(order.split("\\s*,\\s*"));
 			ArrayList<Integer> categories = new ArrayList<Integer>();
 			int i = 0;
@@ -98,6 +136,13 @@ public class ShopOrderController extends Controller {
 
 	}
 
+	/**
+	 * Löscht die {@link ShopOrder}
+	 * 
+	 * @param id
+	 *            der ShopOrder
+	 * @return viewShopOrders View
+	 */
 	@Transactional
 	public static Result deleteShopOrder(int id) {
 		ShopOrder shopOrder = JPA.em().find(ShopOrder.class, id);

@@ -22,6 +22,13 @@ import javax.persistence.Table;
 
 import play.db.jpa.JPA;
 
+/**
+ * Stellt einen Nutzer des Systems dar. Dieser hat {@link ShoppingList}s und
+ * {@link ShopOrders}
+ * 
+ * @author Hendrik
+ * 
+ */
 @Entity
 @Table(name = "\"User\"")
 public class User {

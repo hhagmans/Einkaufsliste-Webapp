@@ -1,5 +1,11 @@
 package models;
 
+/**
+ * Stellt eine Kategorie eines Artikels dar
+ * 
+ * @author Hendrik Hagmans
+ * 
+ */
 public enum Category {
 
 	FLEISCHFISCH("Fleisch und Fisch"), GEMUESEOBST("Gemüse und Obst"), KOCHENBACKEN(
@@ -26,6 +32,12 @@ public enum Category {
 		this.categoryName = categoryName;
 	}
 
+	/**
+	 * Gibt eine {@link Category} je nach Index (des Formvalues) zurück
+	 * 
+	 * @param index
+	 * @return
+	 */
 	public static Category getCategoryByIndex(int index) {
 		Category categories[] = new Category[] { Category.FLEISCHFISCH,
 				Category.GEMUESEOBST, Category.KOCHENBACKEN,

@@ -20,6 +20,12 @@ import javax.persistence.TemporalType;
 
 import play.db.jpa.JPA;
 
+/**
+ * Stellt eine SHoppingList mit Artikeln dar
+ * 
+ * @author Hendrik Hagmans
+ * 
+ */
 @Entity
 public class ShoppingList {
 
@@ -32,8 +38,10 @@ public class ShoppingList {
 	@OneToOne
 	private ShopOrder shopOrder = null;
 
+	// Wenn true, dann eigene Sortierung statt Kategoriesortierung
 	private boolean ownSorting = false;
 
+	// Sortierung der Ids der Artikel, nur bei eigener Sortierung
 	@ElementCollection
 	private List<Integer> sorting = new ArrayList<Integer>();
 
@@ -55,6 +63,12 @@ public class ShoppingList {
 		this.shopOrder = shopOrder;
 	}
 
+	/**
+	 * Gibt ShoppingLists des Users zurück, deren Datum >= heute ist.
+	 * 
+	 * @param username
+	 * @return
+	 */
 	public static List<ShoppingList> getCurrentShoppingLists(String username) {
 		User user = JPA.em().find(User.class, username);
 
@@ -78,6 +92,12 @@ public class ShoppingList {
 		return currentLists;
 	}
 
+	/**
+	 * Gibt die ShoppingList des Users von heute zurück
+	 * 
+	 * @param username
+	 * @return
+	 */
 	public static ShoppingList getCurrentShoppingList(String username) {
 		User user = JPA.em().find(User.class, username);
 
@@ -184,6 +204,11 @@ public class ShoppingList {
 		this.sorting = sorting;
 	}
 
+	/**
+	 * Gibt je nach Sortierverfahren eine sortierte Liste der Artikel zurück
+	 * 
+	 * @return
+	 */
 	public List<Article> getArticles() {
 		if (shopOrder != null) {
 			ArrayList<Article> fleischArticles = new ArrayList<Article>();
