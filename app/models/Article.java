@@ -5,6 +5,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
+import play.db.jpa.JPA;
+
 @Entity
 public class Article {
 
@@ -61,5 +63,9 @@ public class Article {
 			this.uncheckArticle();
 		else
 			this.checkArticle();
+	}
+
+	public static Article getArticleById(int id) {
+		return JPA.em().find(Article.class, id);
 	}
 }

@@ -28,7 +28,8 @@
     <div id="divShopOrder">
 		  <label for="shopOrderInput">ShopOrder</label>
           <select class="form-control" id="shopOrderInput" name="shopOrder">
-          <option value="0">Unsortiert</option>
+          <option value="-1">Unsortiert</option>
+          <option value="0">Eigene Sortierung</option>
             @for(shopOrder <- shopOrders) {
             <option value="@shopOrder.getId()">@shopOrder.getName()</option>
             }
@@ -84,7 +85,8 @@
     <div id="divShopOrder">
 		  <label for="shopOrderInput">ShopOrder</label>
           <select class="form-control" id="shopOrderInput" name="shopOrder">
-          <option value="0" @if(shoppingList.getShopOrder() == null) {selected}>Unsortiert</option>
+          <option value="-1" @if(shoppingList.getShopOrder() == null && shoppingList.isOwnSorting() == false) {selected}>Unsortiert</option>
+          <option value="0" @if(shoppingList.getShopOrder() == null && shoppingList.isOwnSorting() == true) {selected}>Eigene Sortierung</option>
             @for(shopOrder <- shopOrders) {
             <option value="@shopOrder.getId()" @if(shoppingList.getShopOrder() != null && shoppingList.getShopOrder().getId().equals(shopOrder.getId())) {selected}>@shopOrder.getName()</option>
             }

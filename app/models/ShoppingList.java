@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.List;
 
 import javax.persistence.CascadeType;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -30,6 +31,11 @@ public class ShoppingList {
 
 	@OneToOne
 	private ShopOrder shopOrder = null;
+
+	private boolean ownSorting = false;
+
+	@ElementCollection
+	private List<Integer> sorting = new ArrayList<Integer>();
 
 	@OneToMany(cascade = CascadeType.REMOVE)
 	@JoinTable(name = "ShoppingList_Articles", joinColumns = { @JoinColumn(name = "ShoppingList_Id", referencedColumnName = "id") }, inverseJoinColumns = { @JoinColumn(name = "Article_Id", referencedColumnName = "id", unique = true) })
@@ -143,12 +149,39 @@ public class ShoppingList {
 		if (shopOrder != null) {
 			return shopOrder.getName();
 		} else {
-			return "Unsortiert";
+			if (ownSorting) {
+				return "Eigene Sortierung";
+			} else {
+				return "Unsortiert";
+			}
 		}
 	}
 
 	public void setShopOrder(ShopOrder shopOrder) {
 		this.shopOrder = shopOrder;
+	}
+
+	public boolean isOwnSorting() {
+		return ownSorting;
+	}
+
+	public void setOwnSorting(boolean ownSorting) {
+		this.ownSorting = ownSorting;
+	}
+
+	public List<Integer> getSorting() {
+		if (sorting.size() < articles.size()) {
+			for (Article article : this.articles) {
+				if (!sorting.contains(article.getId())) {
+					sorting.add(article.getId());
+				}
+			}
+		}
+		return sorting;
+	}
+
+	public void setSorting(List<Integer> sorting) {
+		this.sorting = sorting;
 	}
 
 	public List<Article> getArticles() {
@@ -210,7 +243,16 @@ public class ShoppingList {
 			}
 			return articles;
 		} else {
-			return this.articles;
+			if (ownSorting) {
+				List<Integer> sorting = getSorting();
+				ArrayList<Article> articles = new ArrayList<Article>();
+				for (Integer id : sorting) {
+					articles.add(JPA.em().find(Article.class, id));
+				}
+				return articles;
+			} else {
+				return this.articles;
+			}
 		}
 	}
 

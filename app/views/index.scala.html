@@ -13,6 +13,7 @@
 	    			<th></th>
 	    			<th></th>
 	    			<th></th>
+	    			<th></th>
 	    		</tr>
 	    	</thead>
 	    	<tbody>
@@ -32,6 +33,11 @@
 		  						<a href ="@routes.Application.deleteShoppingList(list.getId())" type="button" class="btn btn-danger btn" onclick="return confirm('Sind Sie sicher?');"
                   title="löschen">
 								  <span class="fa fa-trash fa-2x"></span>
+		  				</td>
+		  				<td>
+		  						@if(list.isOwnSorting()) {<a href ="@routes.Application.editSorting(list.getId())" type="button" class="btn btn-primary btn" >
+								  <span> Editiere Sortierung</span>
+								  }
 		  				</td>
 		  			</tr>
           }

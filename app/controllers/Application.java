@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -23,6 +24,7 @@ import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
 import views.html.createEditShoppingList;
+import views.html.editSorting;
 import views.html.index;
 import views.html.viewShoppingList;
 
@@ -137,8 +139,8 @@ public class Application extends Controller {
 							.getShopOrders()));
 		}
 
-		ShopOrder shopOrder = JPA.em().find(ShopOrder.class,
-				Integer.parseInt(bindedForm.get("shopOrder")));
+		int shopOrderId = Integer.parseInt(bindedForm.get("shopOrder"));
+		ShopOrder shopOrder = JPA.em().find(ShopOrder.class, shopOrderId);
 
 		int i = 0;
 		List<Article> articles = new ArrayList<Article>();
@@ -167,6 +169,9 @@ public class Application extends Controller {
 		} else {
 			ShoppingList list = ShoppingList.createhoppingList(date,
 					session("username"));
+			if (shopOrderId == 0) {
+				list.setOwnSorting(true);
+			}
 			JPA.em().persist(list);
 			list.setArticles(articles);
 			if (shopOrder != null) {
@@ -214,8 +219,8 @@ public class Application extends Controller {
 							.getShopOrders()));
 		}
 
-		ShopOrder shopOrder = JPA.em().find(ShopOrder.class,
-				Integer.parseInt(bindedForm.get("shopOrder")));
+		int shopOrderId = Integer.parseInt(bindedForm.get("shopOrder"));
+		ShopOrder shopOrder = JPA.em().find(ShopOrder.class, shopOrderId);
 
 		int i = 0;
 		List<Article> articles = new ArrayList<Article>();
@@ -255,6 +260,11 @@ public class Application extends Controller {
 		} else {
 			list.setDate(date);
 			list.addArticles(articles);
+			if (shopOrderId == 0) {
+				list.setOwnSorting(true);
+			} else {
+				list.setOwnSorting(false);
+			}
 			JPA.em().merge(list);
 			if (shopOrder != null) {
 				list.setShopOrder(shopOrder);
@@ -292,7 +302,7 @@ public class Application extends Controller {
 	public static Result deleteShoppingList(int id) {
 		ShoppingList list = JPA.em().find(ShoppingList.class, id);
 		User user = JPA.em().find(User.class, session("username"));
-		user.getShopOrders().remove(list);
+		user.getShoppingLists().remove(list);
 		JPA.em().merge(user);
 		JPA.em().remove(list);
 		flash("success", "Einkaufsliste erfolgreich gelöscht!");
@@ -312,4 +322,32 @@ public class Application extends Controller {
 				.getId()));
 	}
 
+	@Transactional
+	public static Result editSorting(int id) {
+		return ok(editSorting.render(session("username"),
+				JPA.em().find(ShoppingList.class, id)));
+	}
+
+	@Transactional
+	public static Result editSortingSave(int id) {
+		DynamicForm bindedForm = form().bindFromRequest();
+
+		String sorting = bindedForm.get("sorting");
+		if (sorting != "") {
+			List<String> sortingArray = Arrays.asList(sorting
+					.split("\\s*,\\s*"));
+			ArrayList<Integer> ids = new ArrayList<Integer>();
+			int i = 0;
+			for (String sort : sortingArray) {
+				ids.add(Integer.parseInt(sort));
+			}
+
+			ShoppingList shoppingList = JPA.em().find(ShoppingList.class, id);
+			shoppingList.setSorting(ids);
+			JPA.em().merge(shoppingList);
+		}
+
+		flash("success", "Sortierung erfolgreich aktualisiert!");
+		return redirect(controllers.routes.Application.index());
+	}
 }

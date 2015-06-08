@@ -1,0 +1,31 @@
+@(username: String)(shoppingList : ShoppingList)
+
+
+@main(username) {
+  <div class="row">
+    <div class="page-header">
+      <h1>Einkaufsliste sortieren<small>@shoppingList.getDate().format("dd.MM.yyyy")</small></h1>
+    </div><!--page-header-->
+  </div><!--row-->
+  @helper.form(action=routes.Application.editSortingSave(shoppingList.getId())) {
+  <ul id="sortable">
+  @for(id <- shoppingList.getSorting()) {
+  <li class="ui-state-default" id="@id">@Article.getArticleById(id).getName()</li>
+  }
+</ul>
+
+  <input type="hidden" class="form-control" id="order" name="sorting">
+  <br>
+  
+  <div class="row">
+      <div class="col-md-2">
+        <button type="submit" class="btn btn-primary">Sortierung speichern</button>
+      </div><!--col-md-2-->
+      <div class="col-md-2"> </div>
+    <div class="col-md-2">
+    <a href="@routes.Application.index()" type="button" class="btn btn-default">Zur&uuml;ck</a> 
+    </div><!--col-md-2-->
+      <div class="col-md-6"></div>
+    </div><!--row-->
+    }
+ }

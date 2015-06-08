@@ -38,6 +38,12 @@ POST     /shoppingList&id=:id/save                           controllers.Applica
 # Delete ShoppingList
 GET     /shoppingList&id=:id/delete                           controllers.Application.deleteShoppingList(id: Int)
 
+# Edit Sorting
+GET     /shoppingList&id=:id/sorting                           controllers.Application.editSorting(id: Int)
+
+# Edit Sorting Save
+GET     /shoppingList&id=:id/sorting/save                           controllers.Application.editSortingSave(id: Int)
+
 # Delete Article
 GET     /shoppingList&id=:id&articleId=:articleId/deleteArticle                           controllers.Application.deleteArticle(id: Int, articleId: Int)
 
