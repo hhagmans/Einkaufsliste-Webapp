@@ -345,6 +345,8 @@ public class Application extends Controller {
 			ShoppingList shoppingList = JPA.em().find(ShoppingList.class, id);
 			shoppingList.setSorting(ids);
 			JPA.em().merge(shoppingList);
+			sendMessageToAndroid(Json.toJson(shoppingList.getArticles())
+					.asText());
 		}
 
 		flash("success", "Sortierung erfolgreich aktualisiert!");
