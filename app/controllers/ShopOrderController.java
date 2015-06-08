@@ -79,18 +79,19 @@ public class ShopOrderController extends Controller {
 
 		String name = bindedForm.get("name");
 		String order = bindedForm.get("order");
-		System.out.println(order);
-		List<String> orderArray = Arrays.asList(order.split("\\s*,\\s*"));
-		ArrayList<Integer> categories = new ArrayList<Integer>();
-		int i = 0;
-		for (String ord : orderArray) {
-			categories.add(Integer.parseInt(ord));
-		}
+		if (order != "") {
+			List<String> orderArray = Arrays.asList(order.split("\\s*,\\s*"));
+			ArrayList<Integer> categories = new ArrayList<Integer>();
+			int i = 0;
+			for (String ord : orderArray) {
+				categories.add(Integer.parseInt(ord));
+			}
 
-		ShopOrder shopOrder = JPA.em().find(ShopOrder.class, id);
-		shopOrder.setName(name);
-		shopOrder.setCategories(categories);
-		JPA.em().merge(shopOrder);
+			ShopOrder shopOrder = JPA.em().find(ShopOrder.class, id);
+			shopOrder.setName(name);
+			shopOrder.setCategories(categories);
+			JPA.em().merge(shopOrder);
+		}
 
 		flash("success", "ShopOrder erfolgreich aktualisiert!");
 		return redirect(controllers.routes.ShopOrderController.viewShopOrders());
