@@ -3,13 +3,11 @@ package models;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.persistence.CascadeType;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToOne;
 
 /**
  * Stellt die Sortierung der {@link Category} einer ShoppingList dar
@@ -25,9 +23,6 @@ public class ShopOrder {
 	private int id;
 
 	private String name;
-
-	@OneToOne(cascade = CascadeType.REMOVE)
-	private ShoppingList shoppingList = null;
 
 	@ElementCollection
 	private List<Integer> categories = new ArrayList<Integer>();
@@ -51,14 +46,6 @@ public class ShopOrder {
 
 	public void setName(String name) {
 		this.name = name;
-	}
-
-	public ShoppingList getShoppingList() {
-		return shoppingList;
-	}
-
-	public void setShoppingList(ShoppingList shoppingList) {
-		this.shoppingList = shoppingList;
 	}
 
 	public List<Integer> getCategories() {

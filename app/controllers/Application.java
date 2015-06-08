@@ -216,7 +216,6 @@ public class Application extends Controller {
 			list.setArticles(articles);
 			if (shopOrder != null) { // Null wenn ohne oder eigene Sortierung
 				list.setShopOrder(shopOrder);
-				shopOrder.setShoppingList(list);
 				JPA.em().merge(list);
 				JPA.em().merge(shopOrder);
 			}
@@ -327,7 +326,6 @@ public class Application extends Controller {
 			if (shopOrder != null) { // Null wenn eigene Sortierung oder ohne
 										// Sortierung
 				list.setShopOrder(shopOrder);
-				shopOrder.setShoppingList(list);
 				JPA.em().merge(list);
 				JPA.em().merge(shopOrder);
 			}
@@ -391,6 +389,8 @@ public class Application extends Controller {
 		User user = JPA.em().find(User.class, session("username"));
 		user.getShoppingLists().remove(list);
 		JPA.em().merge(user);
+		list.setShopOrder(null);
+		JPA.em().merge(list);
 		JPA.em().remove(list);
 		flash("success", "Einkaufsliste erfolgreich gelöscht!");
 		return redirect(controllers.routes.Application.index());

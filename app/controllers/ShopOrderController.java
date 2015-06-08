@@ -96,7 +96,7 @@ public class ShopOrderController extends Controller {
 		}
 		// Keine Änderungen gemacht
 		else {
-			for (int i = 0; i < 9; i++) {
+			for (int i = 0; i < 10; i++) {
 				categories.add(i);
 			}
 		}
