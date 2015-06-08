@@ -319,6 +319,7 @@ public class Application extends Controller {
 			list.addArticles(articles);
 			if (shopOrderId == 0) { // --> Eigene Sortierung
 				list.setOwnSorting(true);
+				list.setShopOrder(null);
 			} else {
 				list.setOwnSorting(false);
 			}
