@@ -53,12 +53,12 @@ public class User {
 
 	private User(String name, String password) {
 		this.name = name;
-		this.password = password;
+		setPassword(password);
 	}
 
 	private User(String name, String password, String regId) {
 		this.name = name;
-		this.password = password;
+		setPassword(password);
 		this.regId = regId;
 	}
 
@@ -75,7 +75,7 @@ public class User {
 	}
 
 	public void setPassword(String password) {
-		this.password = password;
+		this.password = encryptPassword(password);
 	}
 
 	public String getRegId() {
@@ -235,7 +235,7 @@ public class User {
 		User user = JPA.em().find(User.class, name);
 
 		if (user == null) {
-			user = new User(name, encryptPassword(password));
+			user = new User(name, password);
 			JPA.em().persist(user);
 			return user;
 		} else {

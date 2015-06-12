@@ -54,8 +54,13 @@ public class LoginController extends Controller {
 	 * 
 	 * @return Login View
 	 */
-	public static Result logout() {
+	public static Result logout(boolean userDelete) {
 		session().clear();
+		if (userDelete) {
+			flash("success", "User erfolgreich gelöscht!");
+		} else {
+			flash("success", "User erfolgreich ausgeloggt!");
+		}
 		return redirect(controllers.routes.LoginController.login());
 	}
 

@@ -25,6 +25,7 @@ import play.mvc.Result;
 import play.mvc.Security;
 import views.html.createEditShoppingList;
 import views.html.editSorting;
+import views.html.editUser;
 import views.html.index;
 import views.html.viewShoppingList;
 
@@ -469,5 +470,35 @@ public class Application extends Controller {
 
 		flash("success", "Sortierung erfolgreich aktualisiert!");
 		return redirect(controllers.routes.Application.index());
+	}
+
+	public static Result editUser() {
+		return ok(editUser.render(session("username")));
+	}
+
+	@Transactional
+	public static Result editUserSave() {
+		DynamicForm bindedForm = form().bindFromRequest();
+		String userName = session("username");
+		String oldPassword = bindedForm.get("oldpassword");
+		String newPassword = bindedForm.get("newpassword");
+
+		User user = User.findUser(userName, oldPassword);
+		if (user != null) {
+			user.setPassword(newPassword);
+			JPA.em().merge(user);
+			flash("success", "Passwort erfolgreich aktualisiert!");
+		} else {
+			flash("error", "Altes Passwort nicht korrekt!");
+		}
+
+		return ok(editUser.render(userName));
+	}
+
+	@Transactional
+	public static Result deleteUser() {
+		User user = JPA.em().find(User.class, session("username"));
+		JPA.em().remove(user);
+		return redirect(controllers.routes.LoginController.logout(true));
 	}
 }

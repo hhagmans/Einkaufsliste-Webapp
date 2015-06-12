@@ -12,16 +12,27 @@ GET     /login                           controllers.LoginController.login()
 GET     /dologin                           controllers.LoginController.doLogin()
 
 # Logout
-GET     /logout                           controllers.LoginController.logout()
+GET     /logout&deleted=:deleteUser                           controllers.LoginController.logout(deleteUser: Boolean)
 
-# Registrierung
+# Register
 GET     /register                           controllers.LoginController.register()
 
-# Registrierung Save
+# Register Save
 GET     /register/save                           controllers.LoginController.registerSave()
+
+# Edit User
+GET     /user/edit                         controllers.Application.editUser()
+
+# Edit User Save
+GET     /user/edit/save                         controllers.Application.editUserSave()
+
+# Delete User
+GET     /user/delete                         controllers.Application.deleteUser()
+
 
 # Create ShoppingList
 GET     /shoppingList/create                         controllers.Application.createShoppingList()
+
 
 # Create ShoppingList Save
 POST     /shoppingList/save                           controllers.Application.createShoppingListSave()

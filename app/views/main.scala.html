@@ -64,9 +64,9 @@
                 <li><a href="@routes.ShopOrderController.viewShopOrders()">Shoporders</a></li>
               </ul>
               <ul class="nav navbar-nav navbar-right">
-              @if(username != null) {<li><a href="@routes.LoginController.logout()">Logout</a></li>}
+              @if(username != null) {<li><a href="@routes.LoginController.logout(false)">Logout</a></li>}
                 <li>
-                    <a>@if(username == null) {Nicht eingeloggt} else {@username}</a>
+                    <a @if(username != null) {href="@routes.Application.editUser()"}>@if(username == null) {Nicht eingeloggt} else {@username}</a>
                 </li>
               </ul>
             </div><!-- /.navbar-collapse -->
