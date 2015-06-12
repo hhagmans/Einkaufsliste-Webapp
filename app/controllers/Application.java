@@ -472,10 +472,20 @@ public class Application extends Controller {
 		return redirect(controllers.routes.Application.index());
 	}
 
+	/**
+	 * 
+	 * @return editUser View
+	 */
 	public static Result editUser() {
 		return ok(editUser.render(session("username")));
 	}
 
+	/**
+	 * Aktualisiert das Passwort des angemeldeteten Nutzers entsprechend der
+	 * Formvalues
+	 * 
+	 * @return editUserView
+	 */
 	@Transactional
 	public static Result editUserSave() {
 		DynamicForm bindedForm = form().bindFromRequest();
@@ -495,6 +505,11 @@ public class Application extends Controller {
 		return ok(editUser.render(userName));
 	}
 
+	/**
+	 * Löscht den aktuell angemeldeten Nutzer
+	 * 
+	 * @return loginView
+	 */
 	@Transactional
 	public static Result deleteUser() {
 		User user = JPA.em().find(User.class, session("username"));
