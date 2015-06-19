@@ -53,6 +53,8 @@ public class Application extends Controller {
 		Date date;
 		if (formValue == "") {
 			date = null;
+			throw new ParseException(" Date does not match the correct regex.",
+					370);
 		} else {
 			if (!formValue.matches("\\d{2}.\\d{2}.\\d{4}")) {
 				throw new ParseException(
@@ -410,7 +412,7 @@ public class Application extends Controller {
 	public static Result deleteArticle(int listId, int articleId) {
 		Article article = JPA.em().find(Article.class, articleId);
 		ShoppingList list = JPA.em().find(ShoppingList.class, listId);
-		list.getArticles().remove(article);
+		list.getArticlesUnsorted().remove(article);
 		JPA.em().merge(list);
 		JPA.em().remove(article);
 		sendMessageToAndroid(Json.toJson(list).asText());

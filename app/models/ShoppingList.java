@@ -196,6 +196,11 @@ public class ShoppingList {
 					sorting.add(article.getId());
 				}
 			}
+		} else if (sorting.size() > articles.size()) {
+			sorting.clear();
+			for (Article article : this.articles) {
+				sorting.add(article.getId());
+			}
 		}
 		return sorting;
 	}
